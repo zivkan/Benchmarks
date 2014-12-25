@@ -119,5 +119,17 @@ namespace LocalisedResourceExtractionBenchmark
             }
         }
 
+        [TestMethod]
+        public void LabelsAsXmlTests()
+        {
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                ISourceRepository repo = new LabelsAsXml(connection);
+                RunTest(repo);
+            }
+        }
+
     }
 }
