@@ -50,49 +50,20 @@ namespace LocalisedResourceExtractionBenchmark
         }
 
         [Test]
-        public void BasicJoinTests()
+
+        public void RunExtractions(
+            [Values(typeof (BasicJoin),
+                typeof (BasicJoinAsXml),
+                typeof (LabelsAsXml),
+                typeof (LabelsAsColumns))] Type type)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
                 connection.Open();
 
-                ISourceRepository repo = new BasicJoin(connection);
-                RunTest(repo);
-            }
-        }
+                var constuctor = type.GetConstructor(new[] {typeof (SqlConnection)});
+                var repo = (ISourceRepository)constuctor.Invoke(new[] {connection});
 
-        [Test]
-        public void BasicJoinAsXmlTests()
-        {
-            using (var connection = new SqlConnection(ConnectionString))
-            {
-                connection.Open();
-
-                ISourceRepository repo = new BasicJoinAsXml(connection);
-                RunTest(repo);
-            }
-        }
-
-        [Test]
-        public void LabelsAsXmlTests()
-        {
-            using (var connection = new SqlConnection(ConnectionString))
-            {
-                connection.Open();
-
-                ISourceRepository repo = new LabelsAsXml(connection);
-                RunTest(repo);
-            }
-        }
-
-        [Test]
-        public void LabelsAsColumnsTests()
-        {
-            using (var connection = new SqlConnection(ConnectionString))
-            {
-                connection.Open();
-
-                ISourceRepository repo = new LabelsAsColumns(connection);
                 RunTest(repo);
             }
         }
