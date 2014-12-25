@@ -53,6 +53,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="BasicJoin.cs" />
+    <Compile Include="BasicJoinAsXml.cs" />
     <Compile Include="DatabaseTests.cs" />
     <Compile Include="ISourceRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

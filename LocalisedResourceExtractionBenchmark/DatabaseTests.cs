@@ -72,6 +72,29 @@ namespace LocalisedResourceExtractionBenchmark
             }
         }
 
+        private static void RunTest(ISourceRepository repo)
+        {
+            var latencyTimer = new Stopwatch();
+            var completeTimer = new Stopwatch();
+            var enumerator = repo.GetData().GetEnumerator();
+            int rows = 0;
+
+            latencyTimer.Start();
+            completeTimer.Start();
+            if (enumerator.MoveNext())
+                rows++;
+            latencyTimer.Stop();
+
+            for (; enumerator.MoveNext(); )
+            {
+                rows++;
+            }
+            completeTimer.Stop();
+
+            Console.WriteLine("{0} rows. First row after {1}s, complete after {2}s", rows,
+                latencyTimer.Elapsed.TotalSeconds, completeTimer.Elapsed.TotalSeconds);
+        }
+
         [TestMethod]
         public void BasicJoinTests()
         {
@@ -79,26 +102,20 @@ namespace LocalisedResourceExtractionBenchmark
             {
                 connection.Open();
 
-                var repo = new BasicJoin(connection);
-                var latencyTimer = new Stopwatch();
-                var completeTimer = new Stopwatch();
-                var enumerator = repo.GetData().GetEnumerator();
-                int rows = 0;
+                ISourceRepository repo = new BasicJoin(connection);
+                RunTest(repo);
+            }
+        }
 
-                latencyTimer.Start();
-                completeTimer.Start();
-                if (enumerator.MoveNext())
-                    rows++;
-                latencyTimer.Stop();
+        [TestMethod]
+        public void BasicJoinAsXmlTests()
+        {
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
 
-                for (; enumerator.MoveNext();)
-                {
-                    rows++;
-                }
-                completeTimer.Stop();
-
-                Console.WriteLine("{0} rows. First row after {1}s, complete after {2}s", rows,
-                    latencyTimer.Elapsed.TotalSeconds, completeTimer.Elapsed.TotalSeconds);
+                ISourceRepository repo = new BasicJoinAsXml(connection);
+                RunTest(repo);
             }
         }
 
