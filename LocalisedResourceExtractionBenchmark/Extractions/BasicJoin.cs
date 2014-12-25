@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 
-namespace LocalisedResourceExtractionBenchmark
+namespace LocalisedResourceExtractionBenchmark.Extractions
 {
     public class BasicJoin : ISourceRepository
     {

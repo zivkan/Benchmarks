@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using LocalisedResourceExtractionBenchmark.Extractions;
+using LocalisedResourceExtractionBenchmark.Setup;
+using NUnit.Framework;
 
 namespace LocalisedResourceExtractionBenchmark
 {
-    [TestClass]
+    [TestFixture]
     public class DatabaseTests
     {
         private const string ConnectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;Database=LocalisedResourceExtractionBenchmark;Integrated Security=true";
 
-        [TestMethod]
+        [Test]
         public void CreateTablesAndData()
         {
             using (var connection = new SqlConnection(ConnectionString))
@@ -47,7 +49,7 @@ namespace LocalisedResourceExtractionBenchmark
                 latencyTimer.Elapsed.TotalSeconds, completeTimer.Elapsed.TotalSeconds);
         }
 
-        [TestMethod]
+        [Test]
         public void BasicJoinTests()
         {
             using (var connection = new SqlConnection(ConnectionString))
@@ -59,7 +61,7 @@ namespace LocalisedResourceExtractionBenchmark
             }
         }
 
-        [TestMethod]
+        [Test]
         public void BasicJoinAsXmlTests()
         {
             using (var connection = new SqlConnection(ConnectionString))
@@ -71,7 +73,7 @@ namespace LocalisedResourceExtractionBenchmark
             }
         }
 
-        [TestMethod]
+        [Test]
         public void LabelsAsXmlTests()
         {
             using (var connection = new SqlConnection(ConnectionString))
@@ -83,7 +85,7 @@ namespace LocalisedResourceExtractionBenchmark
             }
         }
 
-        [TestMethod]
+        [Test]
         public void LabelsAsColumnsTests()
         {
             using (var connection = new SqlConnection(ConnectionString))

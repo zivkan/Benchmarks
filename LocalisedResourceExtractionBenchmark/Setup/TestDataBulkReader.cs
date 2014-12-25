@@ -5,7 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace LocalisedResourceExtractionBenchmark
+namespace LocalisedResourceExtractionBenchmark.Setup
 {
     class TestDataBulkReader : IDataReader
     {

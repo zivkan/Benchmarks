@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace LocalisedResourceExtractionBenchmark
+namespace LocalisedResourceExtractionBenchmark.Extractions
 {
     class LabelsAsColumns : ISourceRepository
     {
