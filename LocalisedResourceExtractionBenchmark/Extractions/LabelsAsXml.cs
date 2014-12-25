@@ -24,9 +24,9 @@ namespace LocalisedResourceExtractionBenchmark.Extractions
                                       "LEFT OUTER JOIN Source p on s.Parent=p.Id";
                 using (var reader = command.ExecuteReader())
                 {
-                    var codeIndex = reader.GetOrdinal("Code");
-                    var parentIndex = reader.GetOrdinal("Parent");
-                    var labelsIndex = reader.GetOrdinal("Labels");
+                    const int codeIndex = 0;
+                    const int parentIndex = 1;
+                    const int labelsIndex = 2;
                     while (reader.Read())
                     {
                         var code = (string)reader[codeIndex];
