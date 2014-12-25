@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using LocalisedResourceExtractionBenchmark.Benchmark;
 using LocalisedResourceExtractionBenchmark.Extractions;
 using LocalisedResourceExtractionBenchmark.Setup;
 using NUnit.Framework;
@@ -69,5 +70,43 @@ namespace LocalisedResourceExtractionBenchmark
             }
         }
 
+
+        [Test]
+        public void RunBenchmark()
+        {
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                ISourceRepository[] extractors =
+                {
+                    new BasicJoin(connection),
+                    new BasicJoinAsXml(connection),
+                    new LabelsAsColumns(connection),
+                    new LabelsAsXml(connection),
+                };
+
+                const int numRuns = 10;
+                var benchmark = new BenchmarkRunner(extractors, new SingleLanguage(connection), numRuns);
+                var results = benchmark.Run();
+
+                Result fastestResult = results.ExtractionResults[0];
+                PrintResult(results.SingleLanguageResult, fastestResult);
+                foreach (var result in results.ExtractionResults)
+                {
+                    PrintResult(result, fastestResult);
+                }
+            }
+        }
+
+        private static void PrintResult(Result singleLanguageResult, Result fastestResult)
+        {
+            var firstPct = singleLanguageResult.TimeToFirst*100.0/fastestResult.TimeToFirst;
+            var completePct = singleLanguageResult.TimeToComplete*100.0/
+                              fastestResult.TimeToComplete;
+            Console.WriteLine("{0}: First {1:0.##}s ({2:#}%), Complete {3:0.##}s ({4:#}%)", singleLanguageResult.Name,
+                singleLanguageResult.TimeToFirst, firstPct, singleLanguageResult.TimeToComplete,
+                completePct);
+        }
     }
 }

@@ -51,6 +51,12 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Benchmark\Benchmark.cs" />
+    <Compile Include="Benchmark\ExtensionMethods.cs" />
+    <Compile Include="Benchmark\Result.cs" />
+    <Compile Include="Benchmark\Results.cs" />
+    <Compile Include="Benchmark\RunResult.cs" />
+    <Compile Include="Benchmark\Tally.cs" />
     <Compile Include="Extractions\BasicJoin.cs" />
     <Compile Include="Extractions\BasicJoinAsXml.cs" />
     <Compile Include="DatabaseTests.cs" />
