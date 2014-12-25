@@ -55,7 +55,9 @@
     <Compile Include="BasicJoin.cs" />
     <Compile Include="BasicJoinAsXml.cs" />
     <Compile Include="DatabaseTests.cs" />
+    <Compile Include="DbInitialise.cs" />
     <Compile Include="ISourceRepository.cs" />
+    <Compile Include="LabelsAsColumns.cs" />
     <Compile Include="LabelsAsXml.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SourceModel.cs" />
