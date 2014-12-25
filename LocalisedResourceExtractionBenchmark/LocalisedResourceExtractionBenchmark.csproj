@@ -54,6 +54,7 @@
     <Compile Include="Extractions\BasicJoin.cs" />
     <Compile Include="Extractions\BasicJoinAsXml.cs" />
     <Compile Include="DatabaseTests.cs" />
+    <Compile Include="Extractions\SingleLanguage.cs" />
     <Compile Include="Setup\DbInitialise.cs" />
     <Compile Include="ISourceRepository.cs" />
     <Compile Include="Extractions\LabelsAsColumns.cs" />

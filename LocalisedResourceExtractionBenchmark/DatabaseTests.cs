@@ -55,7 +55,8 @@ namespace LocalisedResourceExtractionBenchmark
             [Values(typeof (BasicJoin),
                 typeof (BasicJoinAsXml),
                 typeof (LabelsAsXml),
-                typeof (LabelsAsColumns))] Type type)
+                typeof (LabelsAsColumns),
+                typeof(SingleLanguage))] Type type)
         {
             using (var connection = new SqlConnection(ConnectionString))
             {
