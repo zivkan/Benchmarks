@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LocalisedResourceExtractionBenchmark
@@ -9,7 +10,7 @@ namespace LocalisedResourceExtractionBenchmark
     {
         private const string ConnectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;Database=LocalisedResourceExtractionBenchmark;Integrated Security=true";
 
-        [TestMethod]
+        [TestMethod, Ignore]
         public void CreateTablesAndData()
         {
             using (var connection = new SqlConnection(ConnectionString))
@@ -68,6 +69,36 @@ namespace LocalisedResourceExtractionBenchmark
                 bulkCopy.ColumnMappings.Add("Parent", "Parent");
                 bulkCopy.ColumnMappings.Add("Labels", "Labels");
                 bulkCopy.WriteToServer(source);
+            }
+        }
+
+        [TestMethod]
+        public void BasicJoinTests()
+        {
+            using (var connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                var repo = new BasicJoin(connection);
+                var latencyTimer = new Stopwatch();
+                var completeTimer = new Stopwatch();
+                var enumerator = repo.GetData().GetEnumerator();
+                int rows = 0;
+
+                latencyTimer.Start();
+                completeTimer.Start();
+                if (enumerator.MoveNext())
+                    rows++;
+                latencyTimer.Stop();
+
+                for (; enumerator.MoveNext();)
+                {
+                    rows++;
+                }
+                completeTimer.Stop();
+
+                Console.WriteLine("{0} rows. First row after {1}s, complete after {2}s", rows,
+                    latencyTimer.Elapsed.TotalSeconds, completeTimer.Elapsed.TotalSeconds);
             }
         }
 
