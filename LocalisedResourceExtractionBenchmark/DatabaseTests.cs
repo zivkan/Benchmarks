@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using LocalisedResourceExtractionBenchmark.Benchmark;
 using LocalisedResourceExtractionBenchmark.Extractions;
 using LocalisedResourceExtractionBenchmark.Setup;
@@ -22,7 +24,7 @@ namespace LocalisedResourceExtractionBenchmark
 
                 var langs = new[] {"en", "fr", "de", "it", "es"};
 
-                var db = new DbInitialise(connection, 500000, langs);
+                var db = new DbInitialise(connection, 20000, langs);
                 db.CreateAndPopulateTables();
             }
         }
@@ -90,23 +92,54 @@ namespace LocalisedResourceExtractionBenchmark
                 var benchmark = new BenchmarkRunner(extractors, new SingleLanguage(connection), numRuns);
                 var results = benchmark.Run();
 
-                Result fastestResult = results.ExtractionResults[0];
+                var fastestResult = results.ExtractionResults[0];
                 PrintResult(results.SingleLanguageResult, fastestResult);
                 foreach (var result in results.ExtractionResults)
                 {
                     PrintResult(result, fastestResult);
                 }
+
+                UpdateReadme(results);
             }
         }
 
-        private static void PrintResult(Result singleLanguageResult, Result fastestResult)
+        private static void PrintResult(Result result, Result fastestResult)
         {
-            var firstPct = singleLanguageResult.TimeToFirst*100.0/fastestResult.TimeToFirst;
-            var completePct = singleLanguageResult.TimeToComplete*100.0/
-                              fastestResult.TimeToComplete;
-            Console.WriteLine("{0}: First {1:0.##}s ({2:#}%), Complete {3:0.##}s ({4:#}%)", singleLanguageResult.Name,
-                singleLanguageResult.TimeToFirst, firstPct, singleLanguageResult.TimeToComplete,
-                completePct);
+            var firstPct = result.TimeToFirst*100.0/fastestResult.TimeToFirst;
+            var completePct = result.TimeToComplete*100.0/fastestResult.TimeToComplete;
+            Console.WriteLine("{0}: First {1:0.##}s ({2:#}%), Complete {3:0.##}s ({4:#}%)", result.Name,
+                result.TimeToFirst, firstPct, result.TimeToComplete, completePct);
         }
+
+        private void UpdateReadme(Results results)
+        {
+            var filename = Path.Combine(Directory.GetCurrentDirectory(), "..", "..", "Readme.md");
+
+            var contents = File.ReadAllLines(filename).ToList();
+            var resultsIndex = contents.IndexOf("## <a id=\"results\">Results</a>");
+            if (resultsIndex < 0)
+                throw new Exception("Could not find results header");
+            var countToRemove = contents.Count - resultsIndex - 1;
+            contents.RemoveRange(resultsIndex+1, countToRemove);
+
+            var fastestResult = results.ExtractionResults[0];
+
+            contents.Add("");
+            contents.Add("|Extraction Method|Time to first result|Time to complete|");
+            contents.Add("|-----------------|--------------------|----------------|");
+            contents.Add(ResultString(results.SingleLanguageResult, fastestResult));
+            contents.AddRange(results.ExtractionResults.Select(result => ResultString(result, fastestResult)));
+
+            File.WriteAllLines(filename, contents);
+        }
+
+        private string ResultString(Result result, Result fastestResult)
+        {
+            var firstPct = result.TimeToFirst*100.0/fastestResult.TimeToFirst;
+            var completePct = result.TimeToComplete*100.0/fastestResult.TimeToComplete;
+            return string.Format("|{0}|{1:0.##}s ({2:0}%)|{3:0.##}s ({4:0}%)|", result.Name, result.TimeToFirst, firstPct,
+                result.TimeToComplete, completePct);
+        }
+
     }
 }
