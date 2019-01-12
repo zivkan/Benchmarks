@@ -47,7 +47,8 @@ namespace LocalisedResourceExtractionBenchmark
             yield return typeof(BasicJoin);
             yield return typeof(BasicJoinAsXml);
             yield return typeof(LabelsAsXml);
-            yield return typeof(LabelsAsColumns);
+            yield return typeof(LabelsAsJoinedColumns);
+            yield return typeof(LabelsAsPivotedColumns);
             yield return typeof(SingleLanguage);
         }
     }

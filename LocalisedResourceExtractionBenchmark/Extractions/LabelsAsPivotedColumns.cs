@@ -5,11 +5,11 @@ using System.Text;
 
 namespace LocalisedResourceExtractionBenchmark.Extractions
 {
-    class LabelsAsColumns : ISourceRepository
+    class LabelsAsPivotedColumns : ISourceRepository
     {
         private readonly IDbConnection _connection;
 
-        public LabelsAsColumns(IDbConnection connection)
+        public LabelsAsPivotedColumns(IDbConnection connection)
         {
             _connection = connection;
         }
@@ -60,12 +60,23 @@ namespace LocalisedResourceExtractionBenchmark.Extractions
         private string GenerateCommandText(IList<string> langs)
         {
             var sb = new StringBuilder();
-            sb.Append("SELECT s.Code, p.Code Parent");
+            sb.Append("SELECT Code, Parent");
             foreach (var lang in langs)
-                sb.AppendFormat(", l_{0}.Label Label{0}", lang);
-            sb.Append("\nFROM Source s\nLEFT OUTER JOIN Source p ON s.Parent=p.Id");
+                sb.AppendFormat(", {0} Label{0}", lang);
+            sb.Append("\nFROM (\n" +
+                "  SELECT s.Code, p.Code Parent, d.Lang, d.Label\n" +
+                "  FROM Source s\n" +
+                "  LEFT OUTER JOIN Source p ON s.Parent = p.Id\n" +
+                "  LEFT OUTER JOIN Dictionary d ON d.Id = s.Labels\n" +
+                ") q\n" +
+                "PIVOT (" +
+                "  MIN(q.Label)\n" +
+                "  FOR lang IN (");
             foreach (var lang in langs)
-                sb.AppendFormat("\nLEFT OUTER JOIN Dictionary l_{0} ON s.Labels=l_{0}.Id AND l_{0}.Lang='{0}'", lang);
+                sb.AppendFormat("{0}, ", lang);
+            sb.Length -= 2;
+            sb.Append(")\n" +
+                ") pvt");
             return sb.ToString();
         }
         
