@@ -32,13 +32,17 @@ This generates a dynamic SQL query, but it joins the labels table once, like Bas
 ### Labels As XML
 This query also returns one row in the result set for each row in the source table. It also has a static result set structure. It does this by doing a sub query (could call a scalar value function) that retuns all the labels as XML in the label column of the result set. The application then needs to parse the XML and transform it into the application's model data structure.
 
+### Local Join
+Send two queries to the database, one to get the whole source table, another the get the labels from the dictionary for the source rows that were retrieved. Convert all retrieved results into strongly typed classes for fast access and lookup, then do all necessary joins in C#. This tests if specialised data structures in a strongly typed language is faster than SQL, although the C# code is single-threaded.
+
 ## <a id="results">Results</a>
 
 |Extraction Method|Time to complete|Memory Allocated|GC collections per 1k runs (gen0 gen1 gen2)|
 |-----------------|----------------|----------------|-------------------------------------------|
-|SingleLanguage|82 ms (55%)|11.8 MB|2200 1000 300|
-|LabelsAsJoinedColumns|148 ms (100%)|31.8 MB|6300 2900 1000|
-|BasicJoinAsXml|200 ms (134%)|23.1 MB|4400 2000 600|
-|BasicJoin|207 ms (140%)|41.6 MB|8000 3200 1100|
-|LabelsAsPivotedColumns|230 ms (155%)|31.8 MB|6300 2900 1000|
-|LabelsAsXml|332 ms (224%)|260.1 MB|45700 10400 2100|
+|SingleLanguage|86 ms (55%)|11.8 MB|2200 1000 300|
+|LabelsAsJoinedColumns|157 ms (100%)|31.8 MB|6200 2900 900|
+|LocalJoin|193 ms (123%)|45.7 MB|8500 3500 1500|
+|BasicJoin|222 ms (142%)|41.6 MB|8100 3400 1200|
+|BasicJoinAsXml|227 ms (145%)|23.1 MB|4400 2000 600|
+|LabelsAsPivotedColumns|251 ms (160%)|31.8 MB|6300 2900 1000|
+|LabelsAsXml|345 ms (220%)|260.1 MB|44700 9800 1100|

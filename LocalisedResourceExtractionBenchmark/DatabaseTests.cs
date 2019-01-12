@@ -50,6 +50,7 @@ namespace LocalisedResourceExtractionBenchmark
             yield return typeof(LabelsAsJoinedColumns);
             yield return typeof(LabelsAsPivotedColumns);
             yield return typeof(SingleLanguage);
+            yield return typeof(LocalJoin);
         }
     }
 }
