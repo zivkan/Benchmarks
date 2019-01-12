@@ -1,4 +1,4 @@
-﻿# Localised Resource Extraction Benchmark
+# Localised Resource Extraction Benchmark
 
 Here's a quick link to the [results](#results).
 
@@ -31,10 +31,10 @@ This query also returns one row in the result set for each row in the source tab
 
 ## <a id="results">Results</a>
 
-|Extraction Method|Time to first result|Time to complete|
-|-----------------|--------------------|----------------|
-|SingleLanguage|0.05s (288%)|0.07s (72%)|
-|LabelsAsColumns|0.02s (100%)|0.1s (100%)|
-|BasicJoin|0.02s (103%)|0.15s (154%)|
-|BasicJoinAsXml|0.02s (117%)|0.21s (220%)|
-|LabelsAsXml|0.01s (43%)|0.32s (327%)|
+|Extraction Method|Time to complete|Memory Allocated|GC collections per 1k runs (gen0 gen1 gen2)|
+|-----------------|----------------|----------------|-------------------------------------------|
+|SingleLanguage|83 ms (57%)|11.8 MB|2200 1000 300|
+|LabelsAsColumns|146 ms (100%)|31.8 MB|6300 2900 1000|
+|BasicJoinAsXml|201 ms (138%)|23.1 MB|4400 2000 600|
+|BasicJoin|207 ms (142%)|41.6 MB|8000 3200 1100|
+|LabelsAsXml|331 ms (227%)|260.1 MB|45700 10400 2100|

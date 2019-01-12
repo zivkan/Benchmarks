@@ -109,6 +109,5 @@ namespace LocalisedResourceExtractionBenchmark.Setup
                 bulk.WriteToServer(source);
             }
         }
-
     }
 }

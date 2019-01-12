@@ -4,15 +4,21 @@ namespace LocalisedResourceExtractionBenchmark.Benchmark
 {
     class Result
     {
-        public Result(string name, double timeToFirst, double timeToComplete)
+        public Result(string name, double timeToComplete, decimal memoryAllocated, decimal gcGen0Per1000, decimal gcGen1Per1000, decimal gcGen2Per1000)
         {
             TimeToComplete = timeToComplete;
-            TimeToFirst = timeToFirst;
             Name = name;
+            MemoryAllocated = memoryAllocated;
+            GcGen0Per1000 = gcGen0Per1000;
+            GcGen1Per1000 = gcGen1Per1000;
+            GcGen2Per1000 = gcGen2Per1000;
         }
 
-        public String Name { get; private set; }
-        public Double TimeToFirst { get; private set; }
-        public Double TimeToComplete { get; private set; }
+        public string Name { get; }
+        public double TimeToComplete { get; }
+        public decimal MemoryAllocated { get; }
+        public decimal GcGen0Per1000 { get; }
+        public decimal GcGen1Per1000 { get; }
+        public decimal GcGen2Per1000 { get; }
     }
 }

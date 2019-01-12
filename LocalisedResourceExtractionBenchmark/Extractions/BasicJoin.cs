@@ -9,8 +9,11 @@ namespace LocalisedResourceExtractionBenchmark.Extractions
         private readonly IDbConnection _connection;
 
         public static string CommandText =
-            "SELECT \n" + "s.Code, p.Code Parent, l.Lang, l.Label \n" + "FROM Source s \n" +
-            "LEFT OUTER JOIN Source p on s.Parent=p.Id \n" + "LEFT OUTER JOIN Dictionary l on s.Labels=l.Id \n" +
+            "SELECT \n" +
+            "s.Code, p.Code Parent, l.Lang, l.Label \n" +
+            "FROM Source s \n" +
+            "LEFT OUTER JOIN Source p on s.Parent=p.Id \n" +
+            "LEFT OUTER JOIN Dictionary l on s.Labels=l.Id \n" +
             "ORDER BY s.Id";
 
         public BasicJoin(IDbConnection connection)
