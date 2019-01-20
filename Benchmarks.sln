@@ -1,9 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28407.52
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalisedResourceExtractionBenchmark", "LocalisedResourceExtractionBenchmark\LocalisedResourceExtractionBenchmark.csproj", "{287630D8-052A-435E-9297-BD49B67C2279}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LocalisedResourceExtractionBenchmark", "LocalisedResourceExtractionBenchmark\LocalisedResourceExtractionBenchmark.csproj", "{287630D8-052A-435E-9297-BD49B67C2279}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuGetCatalogParserBenchmark", "NuGetCatalogParserBenchmark\NuGetCatalogParserBenchmark.csproj", "{B8501ABC-345D-4EE5-A88A-D0A2DCCBB3A5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3D4540F6-B276-457C-9CD8-BD28F18BED8F}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGetCatalogParserTests", "NuGetCatalogParserTests\NuGetCatalogParserTests.csproj", "{ECC72AB1-D2FD-4068-BA62-9498DDB05F68}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +25,19 @@ Global
 		{287630D8-052A-435E-9297-BD49B67C2279}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{287630D8-052A-435E-9297-BD49B67C2279}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{287630D8-052A-435E-9297-BD49B67C2279}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8501ABC-345D-4EE5-A88A-D0A2DCCBB3A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8501ABC-345D-4EE5-A88A-D0A2DCCBB3A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8501ABC-345D-4EE5-A88A-D0A2DCCBB3A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8501ABC-345D-4EE5-A88A-D0A2DCCBB3A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECC72AB1-D2FD-4068-BA62-9498DDB05F68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECC72AB1-D2FD-4068-BA62-9498DDB05F68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECC72AB1-D2FD-4068-BA62-9498DDB05F68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECC72AB1-D2FD-4068-BA62-9498DDB05F68}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4D148A49-FFD3-48F9-90E3-FE3224FDB575}
 	EndGlobalSection
 EndGlobal

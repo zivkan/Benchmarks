@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Benchmarks repo specific files
+TestData/
+
 # User-specific files
 *.rsuser
 *.suo
