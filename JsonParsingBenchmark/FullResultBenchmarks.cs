@@ -4,9 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using System;
-using System.Buffers;
 using System.IO;
-using System.IO.Pipelines;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -54,45 +52,30 @@ namespace JsonParsingBenchmark
             testServer?.Dispose();
         }
 
-        [Benchmark]
-        public async Task<SearchResults> Stj1()
+        [Benchmark(Description = "System.Text.Json")]
+        public async Task<SearchResults> SystemTextJson()
         {
             var response = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
             using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
-            var pipe = PipeReader.Create(stream);
-            var readResult = await pipe.ReadAsync();
-            while (!readResult.IsCompleted)
-            {
-                pipe.AdvanceTo(readResult.Buffer.Start, readResult.Buffer.End);
-                readResult = await pipe.ReadAsync();
-            }
+            var obj = await JsonSerializer.DeserializeAsync<SearchResults>(stream);
 
-            SearchResults ReadJson(ReadOnlySequence<byte> buffer)
-            {
-                var jsonReader = new Utf8JsonReader(buffer);
-                var obj = JsonSerializer.Deserialize<SearchResults>(ref jsonReader);
-                return obj;
-            }
-
-            var obj = ReadJson(readResult.Buffer);
             return obj;
         }
 
-        [Benchmark]
-        public async Task<SearchResults> Nj1()
+        [Benchmark(Description = "Newtonsoft.Json")]
+        public async Task<SearchResults> NewtonsoftJson()
         {
             var response = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
             using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-            var serializer = new Newtonsoft.Json.JsonSerializer();
+
             SearchResults obj;
             using (var streamReader = new StreamReader(stream))
             using (var jsonReader = new Newtonsoft.Json.JsonTextReader(streamReader))
             {
+                var serializer = new Newtonsoft.Json.JsonSerializer();
                 obj = serializer.Deserialize<SearchResults>(jsonReader);
             }
-
-            if (obj == null) throw new System.NullReferenceException();
 
             return obj;
         }
