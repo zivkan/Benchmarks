@@ -63,6 +63,22 @@ namespace JsonParsingBenchmark
             return obj;
         }
 
+        [Benchmark(Description = "System.Text.Json with JsonConverters")]
+        public async Task<SearchResults> SystemTextJsonCustomConverter()
+        {
+            var response = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+            using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+
+            var options = new JsonSerializerOptions();
+            options.Converters.Add(new Converters.Stj.SearchResultsConverter());
+            options.Converters.Add(new Converters.Stj.SearchResultConverter());
+            options.Converters.Add(new Converters.Stj.SearchResultVersionConverter());
+
+            var obj = await JsonSerializer.DeserializeAsync<SearchResults>(stream, options: options).ConfigureAwait(false);
+
+            return obj;
+        }
+
         [Benchmark(Description = "Newtonsoft.Json")]
         public async Task<SearchResults> NewtonsoftJson()
         {
