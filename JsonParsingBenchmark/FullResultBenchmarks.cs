@@ -52,7 +52,7 @@ namespace JsonParsingBenchmark
             testServer?.Dispose();
         }
 
-        [Benchmark(Description = "System.Text.Json")]
+        [Benchmark(Description = "System.Text.Json", Baseline = true)]
         public async Task<SearchResults> SystemTextJson()
         {
             var response = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
@@ -90,6 +90,27 @@ namespace JsonParsingBenchmark
             using (var jsonReader = new Newtonsoft.Json.JsonTextReader(streamReader))
             {
                 var serializer = new Newtonsoft.Json.JsonSerializer();
+                obj = serializer.Deserialize<SearchResults>(jsonReader);
+            }
+
+            return obj;
+        }
+
+        [Benchmark(Description = "Newtonsoft.Json with JsonConverters")]
+        public async Task<SearchResults> NewtonsoftJsonCustomConverter()
+        {
+            var response = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+            using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+
+            SearchResults obj;
+            using (var streamReader = new StreamReader(stream))
+            using (var jsonReader = new Newtonsoft.Json.JsonTextReader(streamReader))
+            {
+                var serializer = new Newtonsoft.Json.JsonSerializer();
+                serializer.Converters.Add(new Converters.Nj.SearchResultsConverter());
+                serializer.Converters.Add(new Converters.Nj.SearchResultConverter());
+                serializer.Converters.Add(new Converters.Nj.SearchResultVersionConverter());
+
                 obj = serializer.Deserialize<SearchResults>(jsonReader);
             }
 
