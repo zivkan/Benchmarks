@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -29,7 +30,12 @@ namespace JsonParsingBenchmark
 
         public static void EnsureTestData(string path)
         {
-            var fileName = Path.Combine(path, "dotnet-core.json");
+            EnsureTestData(Path.Combine(path, "nuget-org.json"), "https://api.nuget.org/v3/index.json");
+            EnsureTestData(Path.Combine(path, "dotnet-core.json"), "https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json");
+        }
+
+        private static void EnsureTestData(string fileName, string url)
+        {
             if (!File.Exists(fileName))
             {
                 using var httpHandler = new HttpClientHandler()
@@ -38,7 +44,7 @@ namespace JsonParsingBenchmark
                 };
                 using var client = new HttpClient(httpHandler);
 
-                var searchUrl = GetSearchUrl(client);
+                var searchUrl = GetSearchUrl(client, url) + "?skip=0&take=26";
 
                 using var request = new HttpRequestMessage(HttpMethod.Get, searchUrl);
                 var requestTask = client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
@@ -54,9 +60,9 @@ namespace JsonParsingBenchmark
             }
         }
 
-        private static string GetSearchUrl(HttpClient client)
+        private static string GetSearchUrl(HttpClient client, string url)
         {
-            var responseTask = client.GetStringAsync("https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json");
+            var responseTask = client.GetStringAsync(url);
             responseTask.Wait();
             var indexJson = responseTask.Result;
 
@@ -89,11 +95,20 @@ namespace JsonParsingBenchmark
             throw new Exception("search query service not found");
         }
 
-        public static byte[] LoadTestData()
+        public static List<KeyValuePair<string , byte[]>> LoadTestData()
         {
+            var data = new List<KeyValuePair<string, byte[]>>();
+
             var directory = GetTestDataPath();
-            var fileName = Path.Combine(directory, "dotnet-core.json");
-            var data = File.ReadAllBytes(fileName);
+            var files = Directory.EnumerateFiles(directory);
+
+            foreach (var file in files)
+            {
+                var fileName = Path.GetFileName(file);
+                var bytes = File.ReadAllBytes(file);
+                data.Add(new KeyValuePair<string, byte[]>(fileName, bytes));
+            }
+
             return data;
         }
     }
