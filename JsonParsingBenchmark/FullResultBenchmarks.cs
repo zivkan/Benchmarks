@@ -136,13 +136,25 @@ namespace JsonParsingBenchmark
         [Benchmark(Description = "Newtonsoft.Json with JTokens")]
         public async Task<SearchResults> NewtonsoftJsonJToken()
         {
+            // https://github.com/NuGet/NuGet.Client/blob/5d1af18e560b5f381626b5a7e9ce2acacb6211db/src/NuGet.Core/NuGet.Protocol/HttpSource/HttpRetryHandler.cs#L90
+            // https://github.com/NuGet/NuGet.Client/blob/3803820961f4d61c06d07b179dab1d0439ec0d91/src/NuGet.Core/NuGet.Protocol/HttpSource/HttpRetryHandlerRequest.cs#L23
             var response = await httpClient.GetAsync(Uri, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+            // https://github.com/NuGet/NuGet.Client/blob/3803820961f4d61c06d07b179dab1d0439ec0d91/src/NuGet.Core/NuGet.Protocol/HttpSource/HttpRetryHandler.cs#L98
             var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
-            using (var streamReader = new StreamReader(stream))
+            // https://github.com/NuGet/NuGet.Client/blob/5d1af18e560b5f381626b5a7e9ce2acacb6211db/src/NuGet.Core/NuGet.Protocol/Utility/StreamExtensions.cs#L66-L73
+            var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream).ConfigureAwait(false);
+            memoryStream.Position = 0;
+
+            // https://github.com/NuGet/NuGet.Client/blob/007e5c55cad83aa90733ede04eec68a8c29f9be8/src/NuGet.Core/NuGet.Protocol/HttpSource/HttpSource.cs#L271
+            // https://github.com/NuGet/NuGet.Client/blob/5d1af18e560b5f381626b5a7e9ce2acacb6211db/src/NuGet.Core/NuGet.Protocol/Utility/StreamExtensions.cs#L28-L31
+            // https://github.com/NuGet/NuGet.Client/blob/5d1af18e560b5f381626b5a7e9ce2acacb6211db/src/NuGet.Core/NuGet.ProjectModel/JsonUtility.cs#L36
+            using (var streamReader = new StreamReader(memoryStream))
             using (var jsonReader = new JsonTextReader(streamReader))
             {
                 var jtoken = JToken.ReadFrom(jsonReader);
+                // https://github.com/NuGet/NuGet.Client/blob/8058f199bdcce2fddaf35a19474b9ab69f4b4a34/src/NuGet.Core/NuGet.Protocol/Resources/PackageSearchResourceV3.cs#L29
                 var obj = jtoken.ToObject<SearchResults>();
                 return obj;
             }
