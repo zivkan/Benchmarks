@@ -21,6 +21,10 @@ namespace JsonParsingBenchmark
     {
         private TestServer testServer;
         private HttpClient httpClient;
+        private JsonSerializerOptions StjOptions;
+        private Nj.JsonSerializer NjDefaultSerializer;
+        private Nj.JsonSerializer NjConvertersSerializer;
+
 
         [GlobalSetup]
         public void Setup()
@@ -56,6 +60,18 @@ namespace JsonParsingBenchmark
 
             testServer = new TestServer(whb);
             httpClient = testServer.CreateClient();
+
+            StjOptions = new JsonSerializerOptions();
+            StjOptions.Converters.Add(new Converters.Stj.SearchResultsConverter());
+            StjOptions.Converters.Add(new Converters.Stj.SearchResultConverter());
+            StjOptions.Converters.Add(new Converters.Stj.SearchResultVersionConverter());
+
+            NjDefaultSerializer = new Nj.JsonSerializer();
+
+            NjConvertersSerializer = new Nj.JsonSerializer();
+            NjConvertersSerializer.Converters.Add(new Converters.Nj.SearchResultsConverter());
+            NjConvertersSerializer.Converters.Add(new Converters.Nj.SearchResultConverter());
+            NjConvertersSerializer.Converters.Add(new Converters.Nj.SearchResultVersionConverter());
         }
 
         [Params("/nuget-org.json", "/dotnet-core.json")]
@@ -85,12 +101,7 @@ namespace JsonParsingBenchmark
             var response = await httpClient.GetAsync(Uri, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
             using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
-            var options = new JsonSerializerOptions();
-            options.Converters.Add(new Converters.Stj.SearchResultsConverter());
-            options.Converters.Add(new Converters.Stj.SearchResultConverter());
-            options.Converters.Add(new Converters.Stj.SearchResultVersionConverter());
-
-            var obj = await Stj.JsonSerializer.DeserializeAsync<SearchResults>(stream, options: options).ConfigureAwait(false);
+            var obj = await Stj.JsonSerializer.DeserializeAsync<SearchResults>(stream, options: StjOptions).ConfigureAwait(false);
 
             return obj;
         }
@@ -105,8 +116,7 @@ namespace JsonParsingBenchmark
             using (var streamReader = new StreamReader(stream))
             using (var jsonReader = new JsonTextReader(streamReader))
             {
-                var serializer = new Nj.JsonSerializer();
-                obj = serializer.Deserialize<SearchResults>(jsonReader);
+                obj = NjDefaultSerializer.Deserialize<SearchResults>(jsonReader);
             }
 
             return obj;
@@ -122,12 +132,7 @@ namespace JsonParsingBenchmark
             using (var streamReader = new StreamReader(stream))
             using (var jsonReader = new JsonTextReader(streamReader))
             {
-                var serializer = new Nj.JsonSerializer();
-                serializer.Converters.Add(new Converters.Nj.SearchResultsConverter());
-                serializer.Converters.Add(new Converters.Nj.SearchResultConverter());
-                serializer.Converters.Add(new Converters.Nj.SearchResultVersionConverter());
-
-                obj = serializer.Deserialize<SearchResults>(jsonReader);
+                obj = NjConvertersSerializer.Deserialize<SearchResults>(jsonReader);
             }
 
             return obj;
