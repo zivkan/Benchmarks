@@ -38,24 +38,32 @@ namespace JsonParsingBenchmark
         {
             if (!File.Exists(fileName))
             {
-                using var httpHandler = new HttpClientHandler()
+                using (var httpHandler = new HttpClientHandler()
                 {
-                    AutomaticDecompression = DecompressionMethods.All
-                };
-                using var client = new HttpClient(httpHandler);
-
-                var searchUrl = GetSearchUrl(client, url) + "?skip=0&take=26";
-
-                using var request = new HttpRequestMessage(HttpMethod.Get, searchUrl);
-                var requestTask = client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-                requestTask.Wait();
-                var response = requestTask.Result;
-                var contentStreamTask = response.Content.ReadAsStreamAsync();
-                contentStreamTask.Wait();
-                using (var httpStream = contentStreamTask.Result)
-                using (var fileStream = File.OpenWrite(fileName))
+                    AutomaticDecompression =
+#if NET472
+                    DecompressionMethods.GZip | DecompressionMethods.Deflate
+#else
+                    DecompressionMethods.All
+#endif
+                })
+                using (var client = new HttpClient(httpHandler))
                 {
-                    httpStream.CopyTo(fileStream);
+                    var searchUrl = GetSearchUrl(client, url) + "?skip=0&take=26";
+
+                    using (var request = new HttpRequestMessage(HttpMethod.Get, searchUrl))
+                    {
+                        var requestTask = client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                        requestTask.Wait();
+                        var response = requestTask.Result;
+                        var contentStreamTask = response.Content.ReadAsStreamAsync();
+                        contentStreamTask.Wait();
+                        using (var httpStream = contentStreamTask.Result)
+                        using (var fileStream = File.OpenWrite(fileName))
+                        {
+                            httpStream.CopyTo(fileStream);
+                        }
+                    }
                 }
             }
         }
@@ -71,8 +79,8 @@ namespace JsonParsingBenchmark
             var resources = document.RootElement.GetProperty("resources");
             foreach (var resource in resources.EnumerateArray())
             {
-                string? id = null;
-                string? type = null;
+                string id = null;
+                string type = null;
 
                 foreach (var property in resource.EnumerateObject())
                 {
@@ -95,18 +103,17 @@ namespace JsonParsingBenchmark
             throw new Exception("search query service not found");
         }
 
-        public static List<KeyValuePair<string , byte[]>> LoadTestData()
+        public static IReadOnlyDictionary<string, string> LoadTestData()
         {
-            var data = new List<KeyValuePair<string, byte[]>>();
+            var data = new Dictionary<string, string>();
 
             var directory = GetTestDataPath();
             var files = Directory.EnumerateFiles(directory);
 
-            foreach (var file in files)
+            foreach (var fullPath in files)
             {
-                var fileName = Path.GetFileName(file);
-                var bytes = File.ReadAllBytes(file);
-                data.Add(new KeyValuePair<string, byte[]>(fileName, bytes));
+                var fileName = Path.GetFileName(fullPath);
+                data.Add(fileName, fullPath);
             }
 
             return data;
