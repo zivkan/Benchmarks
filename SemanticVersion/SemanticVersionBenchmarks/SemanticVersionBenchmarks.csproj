@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net5.0;netcoreapp3.1;net472</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <LangVersion>8</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
+    <PackageReference Include="NuGet.Versioning" Version="5.8.0" />
+    <PackageReference Include="System.Text.Json" Version="5.0.0" Condition=" '$(TargetFramework)' == 'net472' " />
+    <PackageReference Include="System.Threading.Channels" Version="5.0.0" Condition=" '$(TargetFramework)' == 'net472' " />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\zivkan.Benchmarks.Common\zivkan.Benchmarks.Common.csproj" />
+  </ItemGroup>
+
+</Project>
