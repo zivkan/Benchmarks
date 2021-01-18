@@ -11,6 +11,7 @@ namespace SemanticVersionBenchmarks
     [SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.NetCoreApp50)]
     [SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.NetCoreApp31)]
     [SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.Net472)]
+    [MarkdownExporterAttribute.GitHub]
     public class SortBenchmarks
     {
         private IList _versions;
@@ -74,6 +75,19 @@ namespace SemanticVersionBenchmarks
                     }
                     break;
 
+                case Implementations.VersionWithTwoArrays:
+                    {
+                        var input = new List<VersionWithTwoArrays>(versions.Count);
+                        for (int i = 0; i < versions.Count; i++)
+                        {
+                            input.Add(new VersionWithTwoArrays(versions[i]));
+                        }
+
+                        input.Sort(VersionWithTwoArrays.Compare);
+                        _versions = input;
+                    }
+                    break;
+
                 default:
                     throw new Exception("Unkown implementation " + Implementation);
             }
@@ -84,23 +98,17 @@ namespace SemanticVersionBenchmarks
             NuGet,
             VersionWithString,
             VersionWithClass,
-            VersionWithStruct
+            VersionWithStruct,
+            VersionWithTwoArrays
         }
 
         [ParamsAllValues]
         public Implementations Implementation;
 
-        [ParamsAllValues]
-        public bool Deterministic;
-
-        private Random _rand = new Random();
-
         [IterationSetup]
         public void IterationSetup()
         {
-            var rand = Deterministic
-                ? new Random(1)
-                : _rand;
+            var rand = new Random(1);
             for (int i = _versions.Count - 1; i > 0; i--)
             {
                 var index = rand.Next(0, i + 1);
@@ -143,6 +151,13 @@ namespace SemanticVersionBenchmarks
                     {
                         var data = (List<VersionWithStructArray>)_versions;
                         data.Sort(VersionWithStructArray.Compare);
+                    }
+                    break;
+
+                case Implementations.VersionWithTwoArrays:
+                    {
+                        var data = (List<VersionWithTwoArrays>)_versions;
+                        data.Sort(VersionWithTwoArrays.Compare);
                     }
                     break;
 

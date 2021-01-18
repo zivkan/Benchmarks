@@ -4,9 +4,6 @@ using SemanticVersionBenchmarks;
 using SemanticVersionBenchmarks.Implementations;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -87,6 +84,46 @@ namespace SemanticVersionTests
             }
 
             versions.Sort(VersionWithClassArray.Compare);
+
+            var result = new List<string>();
+            for (int i = 0; i < versions.Count; i++)
+            {
+                result.Add(versions[i].OriginalString);
+            }
+
+            result.Should().Equal(expected);
+        }
+
+        [Fact]
+        public void VersionWithStructArraySort()
+        {
+            var versions = new List<VersionWithStructArray>(input.Count);
+            for (int i = 0; i < input.Count; i++)
+            {
+                versions.Add(new VersionWithStructArray(input[i]));
+            }
+
+            versions.Sort(VersionWithStructArray.Compare);
+
+            var result = new List<string>();
+            for (int i = 0; i < versions.Count; i++)
+            {
+                result.Add(versions[i].OriginalString);
+            }
+
+            result.Should().Equal(expected);
+        }
+
+        [Fact]
+        public void VersionWithTwoArraySort()
+        {
+            var versions = new List<VersionWithTwoArrays>(input.Count);
+            for (int i = 0; i < input.Count; i++)
+            {
+                versions.Add(new VersionWithTwoArrays(input[i]));
+            }
+
+            versions.Sort(VersionWithTwoArrays.Compare);
 
             var result = new List<string>();
             for (int i = 0; i < versions.Count; i++)
