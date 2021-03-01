@@ -130,6 +130,21 @@ namespace SemanticVersionBenchmarks.Implementations
 
         public static int Compare(VersionWithStringArray x, VersionWithStringArray y)
         {
+            if (ReferenceEquals(x, y))
+            {
+                return 0;
+            }
+
+            if (ReferenceEquals(y, null))
+            {
+                return 1;
+            }
+
+            if (ReferenceEquals(x, null))
+            {
+                return -1;
+            }
+
             var cmp = x.Major.CompareTo(y.Major);
             if (cmp != 0)
             {

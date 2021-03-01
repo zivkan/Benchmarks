@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>net5.0;netcoreapp3.1;net472</TargetFrameworks>
-    <Nullable>enable</Nullable>
+    <!--<Nullable>enable</Nullable>-->
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <LangVersion>8</LangVersion>
   </PropertyGroup>

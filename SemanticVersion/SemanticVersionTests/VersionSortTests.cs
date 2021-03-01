@@ -133,5 +133,88 @@ namespace SemanticVersionTests
 
             result.Should().Equal(expected);
         }
+
+        [Fact]
+        public void NuGetCopy()
+        {
+            RunNuGetCopy(
+                v => new SemanticVersionBenchmarks.Implementations.NuGetCopy.NuGetVersion(v.Version, v.ReleaseLabels, v.Metadata, v.OriginalVersion),
+                SemanticVersionBenchmarks.Implementations.NuGetCopy.VersionComparer.Default.Compare,
+                v => v.OriginalVersion);
+        }
+
+        [Fact]
+        public void NuGetCopy2()
+        {
+            RunNuGetCopy(
+                v => new SemanticVersionBenchmarks.Implementations.NuGetCopy2.NuGetVersion(v.Version, v.ReleaseLabels, v.Metadata, v.OriginalVersion),
+                SemanticVersionBenchmarks.Implementations.NuGetCopy2.VersionComparer.Default.Compare,
+                v => v.OriginalVersion);
+        }
+
+        [Fact]
+        public void NuGetCopy3()
+        {
+            RunNuGetCopy(
+                v => new SemanticVersionBenchmarks.Implementations.NuGetCopy3.NuGetVersion(v.Version, v.ReleaseLabels, v.Metadata, v.OriginalVersion),
+                SemanticVersionBenchmarks.Implementations.NuGetCopy3.VersionComparer.Default.Compare,
+                v => v.OriginalVersion);
+        }
+
+        [Fact]
+        public void NuGetCopy4()
+        {
+            RunNuGetCopy(
+                v => new SemanticVersionBenchmarks.Implementations.NuGetCopy4.NuGetVersion(v.Version, v.ReleaseLabels, v.Metadata, v.OriginalVersion),
+                SemanticVersionBenchmarks.Implementations.NuGetCopy4.VersionComparer.Default.Compare,
+                v => v.OriginalVersion);
+        }
+
+        [Fact]
+        public void NuGetCopy5()
+        {
+            RunNuGetCopy(
+                v => new SemanticVersionBenchmarks.Implementations.NuGetCopy5.NuGetVersion(v.Version, v.ReleaseLabels, v.Metadata, v.OriginalVersion),
+                SemanticVersionBenchmarks.Implementations.NuGetCopy5.VersionComparer.Default.Compare,
+                v => v.OriginalVersion);
+        }
+
+        [Fact]
+        public void NuGetCopy6()
+        {
+            RunNuGetCopy(
+                v => new SemanticVersionBenchmarks.Implementations.NuGetCopy6.NuGetVersion(v.Version, v.ReleaseLabels, v.Metadata, v.OriginalVersion),
+                SemanticVersionBenchmarks.Implementations.NuGetCopy6.VersionComparer.Default.Compare,
+                v => v.OriginalVersion);
+        }
+
+        [Fact]
+        public void NuGetCopy7()
+        {
+            RunNuGetCopy(
+                v => new SemanticVersionBenchmarks.Implementations.NuGetCopy7.NuGetVersion(v.Version, v.ReleaseLabels, v.Metadata, v.OriginalVersion),
+                SemanticVersionBenchmarks.Implementations.NuGetCopy7.VersionComparer.Default.Compare,
+                v => v.OriginalVersion);
+        }
+
+        private void RunNuGetCopy<T>(Func<NuGetVersion, T> parse, Comparison<T> comparer, Func<T, string> originalString)
+        {
+            var versions = new List<T>(input.Count);
+            for (int i = 0; i < input.Count; i++)
+            {
+                var nugetVersion = NuGetVersion.Parse(input[i]);
+                versions.Add(parse(nugetVersion));
+            }
+
+            versions.Sort(comparer);
+
+            var result = new List<string>();
+            for (int i = 0; i < versions.Count; i++)
+            {
+                result.Add(originalString(versions[i]));
+            }
+
+            result.Should().Equal(expected);
+        }
     }
 }
