@@ -117,7 +117,7 @@ namespace zivkan.Benchmarks.Common
             }
 
             var uri = new Uri(item.id);
-            var fileName = Path.Combine(_localPath, TestData.NuGetOrgCatalog, uri.Segments[uri.Segments.Length]);
+            var fileName = Path.Combine(_localPath, TestData.NuGetOrgCatalog, uri.Segments[uri.Segments.Length - 1]);
             var download = true;
             if (File.Exists(fileName))
             {
