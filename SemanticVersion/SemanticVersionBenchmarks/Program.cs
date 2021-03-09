@@ -9,7 +9,8 @@ namespace SemanticVersionBenchmarks
         {
             var versions = await VersionData.GetVersionsAsync();
 
-            BenchmarkRunner.Run<SortBenchmarks>();
+            //BenchmarkRunner.Run<SortBenchmarks>();
+            BenchmarkRunner.Run<ParseBenchmarks>();
         }
     }
 }

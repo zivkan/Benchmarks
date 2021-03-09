@@ -2,6 +2,7 @@ using FluentAssertions;
 using NuGet.Versioning;
 using SemanticVersionBenchmarks;
 using SemanticVersionBenchmarks.Implementations;
+using SemanticVersionBenchmarks.Implementations.Parsers;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -80,7 +81,7 @@ namespace SemanticVersionTests
             var versions = new List<VersionWithClassArray>(input.Count);
             for (int i = 0; i < input.Count; i++)
             {
-                versions.Add(new VersionWithClassArray(input[i]));
+                versions.Add(SubstringParser.Parse(input[i]));
             }
 
             versions.Sort(VersionWithClassArray.Compare);

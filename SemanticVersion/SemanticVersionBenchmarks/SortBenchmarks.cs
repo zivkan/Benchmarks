@@ -1,6 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
 using NuGet.Versioning;
 using SemanticVersionBenchmarks.Implementations;
+using SemanticVersionBenchmarks.Implementations.Parsers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -122,7 +123,7 @@ namespace SemanticVersionBenchmarks
                     break;
 
                 case Implementations.VersionWithClass:
-                    _versions = SetupInput(versions, str => new VersionWithClassArray(str), VersionWithClassArray.Compare);
+                    _versions = SetupInput(versions, str => SubstringParser.Parse(str), VersionWithClassArray.Compare);
                     break;
 
                 case Implementations.VersionWithStruct:

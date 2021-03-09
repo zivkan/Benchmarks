@@ -15,117 +15,15 @@ namespace SemanticVersionBenchmarks.Implementations
         public PrereleaseSegment[]? Prerelease { get; }
         public string? Metadata { get; }
 
-        public VersionWithClassArray(string originalString)
+        public VersionWithClassArray(string originalString, uint major, uint minor, uint patch, uint? legacy, PrereleaseSegment[]? prerelease, string? metadata)
         {
-            var prereleaseSeparatorIndex = originalString.IndexOf('-');
-            var metadataSeparatorIndex = originalString.IndexOf('+');
-
-            if (metadataSeparatorIndex > 0)
-            {
-                Metadata = originalString.Substring(metadataSeparatorIndex + 1);
-
-                if (prereleaseSeparatorIndex > metadataSeparatorIndex)
-                {
-                    prereleaseSeparatorIndex = -1;
-                }
-            }
-            else
-            {
-                Metadata = null;
-                metadataSeparatorIndex = originalString.Length;
-            }
-
-            if (prereleaseSeparatorIndex > 0)
-            {
-                var preReleaseString = originalString.Substring(prereleaseSeparatorIndex + 1, metadataSeparatorIndex - prereleaseSeparatorIndex - 1);
-                Prerelease = ParsePreRelease(preReleaseString);
-            }
-            else
-            {
-                Prerelease = null;
-                prereleaseSeparatorIndex = metadataSeparatorIndex;
-            }
-
-            var versionString = originalString.Substring(0, prereleaseSeparatorIndex);
-            (Major, Minor, Patch, Legacy) = ParseVersion(versionString);
-
             OriginalString = originalString;
-        }
-
-        private PrereleaseSegment[] ParsePreRelease(string preReleaseString)
-        {
-            var segments = new PrereleaseSegment[preReleaseString.Count(c => c == '.') + 1];
-
-            if (segments.Length == 1)
-            {
-                segments[0] = new PrereleaseSegment(preReleaseString);
-                return segments;
-            }
-
-            int lastIndex = -1;
-            for (int i = 0; i < segments.Length - 1; i++)
-            {
-                var nextIndex = preReleaseString.IndexOf('.', lastIndex + 1);
-                if (nextIndex == -1)
-                {
-                    throw new Exception("bug");
-                }
-
-                var start = lastIndex + 1;
-                var length = nextIndex - lastIndex - 1;
-                segments[i] = new PrereleaseSegment(preReleaseString.Substring(start, length));
-                lastIndex = nextIndex;
-            }
-
-            segments[segments.Length - 1] = new PrereleaseSegment(preReleaseString.Substring(lastIndex + 1));
-            return segments;
-        }
-
-        private (uint Major, uint Minor, uint Patch, uint? Legacy) ParseVersion(string versionString)
-        {
-            var firstDotIndex = versionString.IndexOf('.');
-            uint major;
-            if (firstDotIndex < 0)
-            {
-                major = uint.Parse(versionString);
-                return (major, 0, 0, null);
-            }
-
-            var firstSegment = versionString.Substring(0, firstDotIndex);
-            major = uint.Parse(firstSegment);
-
-            var secondDotIndex = versionString.IndexOf('.', firstDotIndex + 1);
-            string secondSegment;
-            uint minor;
-            if (secondDotIndex < 0)
-            {
-                secondSegment = versionString.Substring(firstDotIndex + 1);
-                minor = uint.Parse(secondSegment);
-                return (major, minor, 0, null);
-            }
-
-            secondSegment = versionString.Substring(firstDotIndex + 1, secondDotIndex - firstDotIndex - 1);
-            minor = uint.Parse(secondSegment);
-
-            var thirdDotIndex = versionString.IndexOf('.', secondDotIndex + 1);
-            string thirdSegment;
-            uint patch;
-            uint? legacy;
-            if (thirdDotIndex < 0)
-            {
-                thirdSegment = versionString.Substring(secondDotIndex + 1);
-                patch = uint.Parse(thirdSegment);
-                legacy = null;
-            }
-            else
-            {
-                thirdSegment = versionString.Substring(secondDotIndex + 1, thirdDotIndex - secondDotIndex - 1);
-                patch = uint.Parse(thirdSegment);
-                var legacySegment = versionString.Substring(thirdDotIndex + 1);
-                legacy = uint.Parse(legacySegment);
-            }
-
-            return (major, minor, patch, legacy);
+            Major = major;
+            Minor = minor;
+            Patch = patch;
+            Legacy = legacy;
+            Prerelease = prerelease;
+            Metadata = metadata;
         }
 
         public static int Compare(VersionWithClassArray x, VersionWithClassArray y)
