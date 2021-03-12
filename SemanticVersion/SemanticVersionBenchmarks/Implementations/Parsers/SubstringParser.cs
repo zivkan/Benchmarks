@@ -14,6 +14,7 @@ namespace SemanticVersionBenchmarks.Implementations.Parsers
             if (metadataSeparatorIndex > 0)
             {
                 metadata = originalString.Substring(metadataSeparatorIndex + 1);
+                ParserShared.ValidateMetadata(metadata);
 
                 if (prereleaseSeparatorIndex > metadataSeparatorIndex)
                 {
@@ -48,11 +49,13 @@ namespace SemanticVersionBenchmarks.Implementations.Parsers
 
             if (segments.Length == 1)
             {
+                IsValid(preReleaseString);
                 segments[0] = new VersionWithClassArray.PrereleaseSegment(preReleaseString);
                 return segments;
             }
 
             int lastIndex = -1;
+            string segment;
             for (int i = 0; i < segments.Length - 1; i++)
             {
                 var nextIndex = preReleaseString.IndexOf('.', lastIndex + 1);
@@ -63,12 +66,39 @@ namespace SemanticVersionBenchmarks.Implementations.Parsers
 
                 var start = lastIndex + 1;
                 var length = nextIndex - lastIndex - 1;
-                segments[i] = new VersionWithClassArray.PrereleaseSegment(preReleaseString.Substring(start, length));
+                segment = preReleaseString.Substring(start, length);
+                IsValid(segment);
+                segments[i] = new VersionWithClassArray.PrereleaseSegment(segment);
+                IsValid(segments[i].Value);
                 lastIndex = nextIndex;
             }
 
-            segments[segments.Length - 1] = new VersionWithClassArray.PrereleaseSegment(preReleaseString.Substring(lastIndex + 1));
+            segment = preReleaseString.Substring(lastIndex + 1);
+            IsValid(segment);
+            segments[segments.Length - 1] = new VersionWithClassArray.PrereleaseSegment(segment);
             return segments;
+
+            static bool IsValid(string segment)
+            {
+                if (segment.Length == 0)
+                {
+                    throw new ArgumentException();
+                }
+
+                for (int i = 0; i < segment.Length; i++)
+                {
+                    char c = segment[i];
+                    if (!((c >= '0' && c <= '9')
+                        || (c >= 'a' && c <= 'z')
+                        || (c >= 'A' && c <= 'Z')
+                        || c == '.' || c == '-'))
+                    {
+                        throw new ArgumentException();
+                    }
+                }
+
+                return true;
+            }
         }
 
         private static (uint Major, uint Minor, uint Patch, uint? Legacy) ParseVersion(string versionString)
