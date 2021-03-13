@@ -5,6 +5,8 @@ namespace SemanticVersionBenchmarks.Implementations.Parsers
 {
     public static class RegexParser
     {
+        // Copied from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+        // Modified to use .NET RegEx syntax, and to be compatible with NuGetVersion, which is more permissive than SemVer2.
         private static Regex _regex = new Regex(@"^(?<major>0|[1-9]\d*)(\.(?<minor>\d+)(\.(?<patch>\d+)(\.(?<revision>\d+))?)?)?(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$", RegexOptions.CultureInvariant|RegexOptions.Singleline|RegexOptions.Compiled);
 
         public static VersionWithClassArray Parse(string input)
