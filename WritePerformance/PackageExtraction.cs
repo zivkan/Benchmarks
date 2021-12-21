@@ -8,8 +8,7 @@ public class PackageExtraction
 {
     IReadOnlyList<string>? packages;
 
-    //[Params(1, 2, 4, 8, 16, 32)]
-    [Params(8)]
+    [Params(1, 2, 4, 8, 16, 32)]
     public int MaxParallel { get; set; }
 
     [GlobalSetup]
@@ -22,7 +21,10 @@ public class PackageExtraction
     [IterationSetup]
     public void IterationSetup()
     {
-        Directory.Delete("extract", true);
+        if (Directory.Exists("extract"))
+        {
+            Directory.Delete("extract", true);
+        }
     }
 
     [IterationCleanup]
@@ -124,42 +126,6 @@ public class PackageExtraction
             {
                 input.CopyTo(output);
             }
-        }
-        return Task.CompletedTask;
-    }
-
-    [Benchmark]
-    public void Hybrid()
-    {
-        if (packages == null)
-        {
-            throw new Exception("Instance hasn't been setup");
-        }
-
-        var options = new ParallelOptions()
-        {
-            MaxDegreeOfParallelism = MaxParallel
-        };
-
-        Parallel.For(0, packages.Count, options, index =>
-        {
-            ExtractZip(packages[index], CopyHybrid).GetAwaiter().GetResult();
-        });
-    }
-
-    private Task CopyHybrid(Stream input, FileStream output, long length)
-    {
-        if (length > 100_000)
-        {
-            using (var mmf = MemoryMappedFile.CreateFromFile(output, null, length, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, false))
-            using (var mmstream = mmf.CreateViewStream())
-            {
-                input.CopyTo(output);
-            }
-        }
-        else
-        {
-            input.CopyTo(output);
         }
         return Task.CompletedTask;
     }

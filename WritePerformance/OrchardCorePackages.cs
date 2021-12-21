@@ -23,7 +23,7 @@ internal class OrchardCodePackagesSetup
         var packageIdentities = GetPackageIdentities();
         var packages = new string[packageIdentities.Count];
         int index = 0;
-        var tasks = new Task[4];
+        var tasks = new Task[Math.Min(4, packageIdentities.Count)];
 
         for (int i = 0; i < tasks.Length; i++)
         {
