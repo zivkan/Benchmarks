@@ -7,9 +7,15 @@ using BenchmarkDotNet.Engines;
 public class PackageExtraction
 {
     IReadOnlyList<string>? packages;
+    string extractDirectory;
 
     [Params(1, 2, 4, 8, 16, 32)]
     public int MaxParallel { get; set; }
+
+    public PackageExtraction()
+    {
+        extractDirectory = Path.Combine("bin", "extract");
+    }
 
     [GlobalSetup]
     public async Task GlobalSetup()
@@ -21,16 +27,16 @@ public class PackageExtraction
     [IterationSetup]
     public void IterationSetup()
     {
-        if (Directory.Exists("extract"))
+        if (Directory.Exists(extractDirectory))
         {
-            Directory.Delete("extract", true);
+            Directory.Delete(extractDirectory, true);
         }
     }
 
     [IterationCleanup]
     public void IterationCleanup()
     {
-        Directory.Delete("extract", true);
+        Directory.Delete(extractDirectory, true);
     }
 
     [Benchmark]
@@ -124,7 +130,7 @@ public class PackageExtraction
             using (var mmf = MemoryMappedFile.CreateFromFile(output, null, length, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, false))
             using (var mmstream = mmf.CreateViewStream())
             {
-                input.CopyTo(output);
+                input.CopyTo(mmstream);
             }
         }
         return Task.CompletedTask;
@@ -132,7 +138,7 @@ public class PackageExtraction
 
     private async Task ExtractZip(string package, Func<Stream, FileStream, long, Task> copy)
     {
-        var destination = Path.Combine(Environment.CurrentDirectory, "extract", Path.GetFileNameWithoutExtension(package)) + Path.DirectorySeparatorChar;
+        var destination = Path.Combine(extractDirectory, Path.GetFileNameWithoutExtension(package)) + Path.DirectorySeparatorChar;
         Directory.CreateDirectory(destination);
 
         using (var zipFile = File.Open(package, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete))
