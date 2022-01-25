@@ -39,7 +39,7 @@ public class PackageExtraction
         Directory.Delete(extractDirectory, true);
     }
 
-    [Benchmark]
+    [Benchmark(Baseline = true)]
     public void CopyTo()
     {
         if (packages == null)
@@ -89,7 +89,7 @@ public class PackageExtraction
                 if (tasks[i].IsCompleted)
                 {
                     var packageIndex = index;
-                    tasks[i] = Task.Run(() => ExtractZip(packages[packageIndex], CopyToAsync));
+                    tasks[i] = Task.Run(() => ExtractZip(packages[packageIndex], CopyToAsync, useAsync: true));
                     index++;
                 }
             }
@@ -136,12 +136,14 @@ public class PackageExtraction
         return Task.CompletedTask;
     }
 
-    private async Task ExtractZip(string package, Func<Stream, FileStream, long, Task> copy)
+    private async Task ExtractZip(string package, Func<Stream, FileStream, long, Task> copy, bool useAsync = false)
     {
         var destination = Path.Combine(extractDirectory, Path.GetFileNameWithoutExtension(package)) + Path.DirectorySeparatorChar;
         Directory.CreateDirectory(destination);
 
-        using (var zipFile = File.Open(package, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete))
+        FileOptions fileOptions = useAsync ? FileOptions.Asynchronous : FileOptions.None;
+
+        using (var zipFile = new FileStream(package, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete, 4096, useAsync))
         using (var zip = new ZipArchive(zipFile))
         {
             foreach (var entry in zip.Entries)
@@ -163,7 +165,7 @@ public class PackageExtraction
                     throw new Exception("Zip slip");
                 }
 
-                using (var writeStream = File.Create(destinationFile))
+                using (var writeStream = File.Create(destinationFile, 4096, fileOptions))
                 using (var zipStream = entry.Open())
                 {
                     await copy(zipStream, writeStream, entry.Length);
