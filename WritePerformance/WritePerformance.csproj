@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
-    <PackageReference Include="NuGet.Protocol" Version="6.2.2" />
+    <PackageReference Include="NuGet.Protocol" Version="6.2.4" />
   </ItemGroup>
 
 </Project>
