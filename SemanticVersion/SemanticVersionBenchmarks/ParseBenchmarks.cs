@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace SemanticVersionBenchmarks
 {
-    [SimpleJob(RuntimeMoniker.NetCoreApp50, baseline: true)]
-    [SimpleJob(RuntimeMoniker.NetCoreApp31)]
-    [SimpleJob(RuntimeMoniker.Net472)]
+    [SimpleJob(RuntimeMoniker.Net80, baseline: true)]
+    [SimpleJob(RuntimeMoniker.Net60)]
+    [SimpleJob(RuntimeMoniker.Net481)]
     [MemoryDiagnoser]
     [Orderer(BenchmarkDotNet.Order.SummaryOrderPolicy.FastestToSlowest)]
     public class ParseBenchmarks
     {
-        private IReadOnlyList<string> _versions;
+        private IReadOnlyList<string>? _versions;
 
         [GlobalSetup]
         public async Task GlobalSetup()
@@ -40,6 +40,11 @@ namespace SemanticVersionBenchmarks
 
         private int Parse(Action<string> parse)
         {
+            if (_versions is null)
+            {
+                throw new InvalidOperationException("GlobalSetup not run");
+            }
+
             int count = 0;
 
             var list = new List<VersionWithClassArray>(_versions.Count);

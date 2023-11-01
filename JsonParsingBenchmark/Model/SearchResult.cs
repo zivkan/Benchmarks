@@ -45,7 +45,7 @@ namespace JsonParsingBenchmark.Model
         public string Title { get; set; }
 
         [JsonPropertyName("totalDownloads")]
-        public int TotalDownloads { get; set; }
+        public long TotalDownloads { get; set; }
 
         [JsonPropertyName("verified")]
         public bool Verified { get; set; }

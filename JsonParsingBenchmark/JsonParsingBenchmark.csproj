@@ -2,14 +2,14 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net5.0;netcoreapp3.1;net472</TargetFrameworks>
+    <TargetFrameworks>net8.0;net6.0;net481</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="System.Text.Json" Version="5.0.0" Condition=" '$(TargetFramework)' == 'net472' " />
-    <Reference Include="System.Net.Http" Condition=" '$(TargetFramework)' == 'net472' " />
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.9" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Text.Json" Version="7.0.3" Condition=" '$(TargetFramework)' == 'net481' " />
+    <Reference Include="System.Net.Http" Condition=" '$(TargetFramework)' == 'net481' " />
   </ItemGroup>
 
 </Project>

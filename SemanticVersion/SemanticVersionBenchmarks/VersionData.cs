@@ -154,7 +154,7 @@ namespace SemanticVersionBenchmarks
                             throw new Exception("Package version is null or empty");
                         }
 
-                        versions.Add(item.packageVersion);
+                        versions.Add(item.packageVersion!);
                     }
 
                     await writer.WriteAsync(versions);

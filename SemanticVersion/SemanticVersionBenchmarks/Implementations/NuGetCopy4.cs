@@ -22,6 +22,8 @@ NuGetCopy4 has the following modifications:
 
 */
 
+#nullable disable
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

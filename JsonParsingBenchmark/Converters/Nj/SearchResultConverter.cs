@@ -145,8 +145,16 @@ namespace JsonParsingBenchmark.Converters.Nj
                                 break;
 
                             case "totalDownloads":
-                                searchResult.TotalDownloads = reader.ReadAsInt32() ?? 0;
-                                break;
+                                {
+                                    string text = reader.ReadAsString();
+                                    long count = 0;
+                                    if (!string.IsNullOrEmpty(text))
+                                    {
+                                        count = long.Parse(text);
+                                    }
+                                    searchResult.TotalDownloads = count;
+                                    break;
+                                }
 
                             case "verified":
                                 searchResult.Verified = reader.ReadAsBoolean() ?? false;

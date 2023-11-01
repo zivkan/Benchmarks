@@ -71,7 +71,7 @@ namespace SemanticVersionBenchmarks.Implementations.Parsers
 
             public StringBuilder buffer;
             public uint number;
-            public List<string> strings;
+            public List<string>? strings;
             public uint segmentNumber;
 
             public Which state;

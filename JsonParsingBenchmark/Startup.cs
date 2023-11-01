@@ -41,7 +41,7 @@ namespace JsonParsingBenchmark
                 using (var httpHandler = new HttpClientHandler()
                 {
                     AutomaticDecompression =
-#if NET472
+#if NETFRAMEWORK
                     DecompressionMethods.GZip | DecompressionMethods.Deflate
 #else
                     DecompressionMethods.All

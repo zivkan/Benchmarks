@@ -11,6 +11,6 @@ namespace JsonParsingBenchmark.Model
         public string Version { get; set; }
 
         [JsonPropertyName("downloads")]
-        public int Downloads { get; set; }
+        public long Downloads { get; set; }
     }
 }

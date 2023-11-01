@@ -29,7 +29,7 @@ namespace JsonParsingBenchmark.Converters.Stj
                     var searchResultVersion = new SearchResultVersion();
                     searchResultVersion.Id = version.GetProperty("@id").GetString();
                     searchResultVersion.Version = version.GetProperty("version").GetString();
-                    searchResultVersion.Downloads = version.GetProperty("downloads").GetInt32();
+                    searchResultVersion.Downloads = version.GetProperty("downloads").GetInt64();
 
                     searchResultVersions.Add(searchResultVersion);
                 }
@@ -37,10 +37,9 @@ namespace JsonParsingBenchmark.Converters.Stj
 
                 searchResult.Authors = ParseStringArray(dataItemElement.GetProperty("authors"));
 
-                if(dataItemElement.TryGetProperty("iconUrl", out JsonElement iconUrlPropery))
+                if(dataItemElement.TryGetProperty("iconUrl", out JsonElement iconUrlProperty))
                 {
-                    searchResult.IconUrl = iconUrlPropery.GetString();
-
+                    searchResult.IconUrl = iconUrlProperty.GetString();
                 }
                 searchResult.LicenseUrl = dataItemElement.GetProperty("licenseUrl").GetString();
                 searchResult.Owners = ParseStringArray(dataItemElement.GetProperty("owners"));
@@ -49,7 +48,7 @@ namespace JsonParsingBenchmark.Converters.Stj
                 searchResult.Summary = dataItemElement.GetProperty("summary").GetString();
                 searchResult.Tags = ParseStringArray(dataItemElement.GetProperty("tags"));
                 searchResult.Title = dataItemElement.GetProperty("title").GetString();
-                searchResult.TotalDownloads = dataItemElement.GetProperty("totalDownloads").GetInt32();
+                searchResult.TotalDownloads = dataItemElement.GetProperty("totalDownloads").GetInt64();
                 if(dataItemElement.TryGetProperty("verified", out JsonElement verifiedProperty))
                 {
                     searchResult.Verified = verifiedProperty.GetBoolean();

@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -61,7 +62,7 @@ namespace NuGetCatalogParserBenchmark
         private async Task<ServiceIndex> GetServiceIndexAsync()
         {
             var response = await _client.GetAsync("https://api.nuget.org/v3/index.json");
-            var serviceIndex = await response.Content.ReadAsAsync<ServiceIndex>();
+            var serviceIndex = await response.Content.ReadFromJsonAsync<ServiceIndex>();
             return serviceIndex;
         }
 

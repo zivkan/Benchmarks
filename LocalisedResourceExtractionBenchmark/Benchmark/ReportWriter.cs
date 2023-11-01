@@ -2,6 +2,7 @@
 using LocalisedResourceExtractionBenchmark.Extractions;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 
@@ -36,7 +37,7 @@ namespace LocalisedResourceExtractionBenchmark.Benchmark
             File.WriteAllLines(filename, contents);
         }
 
-        private static (Result singleLanguage, List<Result> multipleLanguages) ConvertResults(BenchmarkReport[] reports)
+        private static (Result singleLanguage, List<Result> multipleLanguages) ConvertResults(ImmutableArray<BenchmarkReport> reports)
         {
             var results = new List<Result>();
             Result singleLanguageResult = null;
@@ -46,7 +47,7 @@ namespace LocalisedResourceExtractionBenchmark.Benchmark
             {
                 var type = (Type)report.BenchmarkCase.Parameters[0].Value;
                 var time = report.ResultStatistics.Mean / 1_000_000;
-                var memoryAllocated = report.GcStats.BytesAllocatedPerOperation / 1024m / 1024m;
+                var memoryAllocated = report.GcStats.GetBytesAllocatedPerOperation(report.BenchmarkCase).Value / 1024m / 1024m;
                 var gcScalingFactor = 1000m / report.GcStats.TotalOperations;
                 var gcGen0 = report.GcStats.Gen0Collections * gcScalingFactor;
                 var gcGen1 = report.GcStats.Gen1Collections * gcScalingFactor;

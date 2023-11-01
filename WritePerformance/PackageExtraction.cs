@@ -3,11 +3,11 @@ using System.IO.MemoryMappedFiles;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
 
-[SimpleJob(RunStrategy.Monitoring, warmupCount: 1, targetCount: 3)]
+[SimpleJob(RunStrategy.Monitoring, warmupCount: 1, iterationCount: 3)]
 public class PackageExtraction
 {
     IReadOnlyList<string>? packages;
-    string extractDirectory;
+    readonly string extractDirectory;
 
     [Params(1, 2, 4, 8, 16, 32)]
     public int MaxParallel { get; set; }
@@ -127,11 +127,9 @@ public class PackageExtraction
     {
         if (length > 0)
         {
-            using (var mmf = MemoryMappedFile.CreateFromFile(output, null, length, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, false))
-            using (var mmstream = mmf.CreateViewStream())
-            {
-                input.CopyTo(mmstream);
-            }
+            using var mmf = MemoryMappedFile.CreateFromFile(output, null, length, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, false);
+            using var mmStream = mmf.CreateViewStream();
+            input.CopyTo(mmStream);
         }
         return Task.CompletedTask;
     }
@@ -143,34 +141,30 @@ public class PackageExtraction
 
         FileOptions fileOptions = useAsync ? FileOptions.Asynchronous : FileOptions.None;
 
-        using (var zipFile = new FileStream(package, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete, 4096, useAsync))
-        using (var zip = new ZipArchive(zipFile))
+        using var zipFile = new FileStream(package, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete, 4096, useAsync);
+        using var zip = new ZipArchive(zipFile);
+        foreach (var entry in zip.Entries)
         {
-            foreach (var entry in zip.Entries)
+            if (entry.Name.Equals(string.Empty))
             {
-                if (entry.Name.Equals(string.Empty))
-                {
-                    continue;
-                }
-
-                var destinationFile = Path.Combine(destination, entry.FullName);
-                var destinationDirectory = Path.GetDirectoryName(destinationFile);
-                if (!Directory.Exists(destinationDirectory))
-                {
-                    Directory.CreateDirectory(destinationDirectory);
-                }
-
-                if (!destinationFile.StartsWith(destination))
-                {
-                    throw new Exception("Zip slip");
-                }
-
-                using (var writeStream = File.Create(destinationFile, 4096, fileOptions))
-                using (var zipStream = entry.Open())
-                {
-                    await copy(zipStream, writeStream, entry.Length);
-                }
+                continue;
             }
+
+            var destinationFile = Path.GetFullPath(Path.Combine(destination, entry.FullName));
+            if (!destinationFile.StartsWith(destination))
+            {
+                throw new Exception("Zip slip");
+            }
+
+            var destinationDirectory = Path.GetDirectoryName(destinationFile);
+            if (!Directory.Exists(destinationDirectory))
+            {
+                Directory.CreateDirectory(destinationDirectory!);
+            }
+
+            using var writeStream = File.Create(destinationFile, 4096, fileOptions);
+            using var zipStream = entry.Open();
+            await copy(zipStream, writeStream, entry.Length);
         }
     }
 }

@@ -83,6 +83,7 @@ internal class OrchardCodePackagesSetup
         catch (Exception ex)
         {
             // for debugging, breakpoint and local variable inspection.
+            _ = ex;
             throw;
         }
     }

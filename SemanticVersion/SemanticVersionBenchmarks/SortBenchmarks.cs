@@ -17,21 +17,18 @@ using NuGetCopy7 = SemanticVersionBenchmarks.Implementations.NuGetCopy7;
 
 namespace SemanticVersionBenchmarks
 {
-    [SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.NetCoreApp50)]
-    [SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.NetCoreApp31)]
-    [SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.Net472)]
+    [SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.Net80)]
+    [SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.Net60)]
+    [SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.Net481)]
     [MarkdownExporterAttribute.GitHub]
     [MemoryDiagnoser]
     public class SortBenchmarks
     {
-        private IList _versions;
+        private IList? _versions;
 
         [GlobalSetup]
         public async Task GlobalSetup()
         {
-            var proc = System.Diagnostics.Process.GetCurrentProcess();
-            proc.ProcessorAffinity = (IntPtr)0x1;
-
             var versions = await VersionData.GetVersionsAsync();
 
             static List<T> SetupInput<T>(List<string> strings, Func<string, T> parse, Comparison<T> comparer)
@@ -135,7 +132,7 @@ namespace SemanticVersionBenchmarks
                     break;
 
                 default:
-                    throw new Exception("Unkown implementation " + Implementation);
+                    throw new Exception("Unknown implementation " + Implementation);
             }
         }
 
@@ -162,7 +159,7 @@ namespace SemanticVersionBenchmarks
         public void IterationSetup()
         {
             var rand = new Random(1);
-            for (int i = _versions.Count - 1; i > 0; i--)
+            for (int i = _versions!.Count - 1; i > 0; i--)
             {
                 var index = rand.Next(0, i + 1);
                 if (index != i)
@@ -179,7 +176,7 @@ namespace SemanticVersionBenchmarks
         {
             void Go<T>(Comparison<T> comparison)
             {
-                var data = (List<T>)_versions;
+                var data = (List<T>)_versions!;
                 data.Sort(comparison);
             }
 

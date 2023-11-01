@@ -171,7 +171,7 @@ namespace JsonParsingBenchmark.Converters.Stj
                         else if (reader.ValueTextEquals(utf8TotalDownloads))
                         {
                             reader.Read();
-                            searchResult.TotalDownloads = reader.GetInt32();
+                            searchResult.TotalDownloads = reader.GetInt64();
                         }
                         else if (reader.ValueTextEquals(utf8Verified))
                         {
