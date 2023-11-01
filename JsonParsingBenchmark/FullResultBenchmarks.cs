@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
+using JsonParsingBenchmark.Converters.Stj;
 using JsonParsingBenchmark.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -61,6 +62,29 @@ namespace JsonParsingBenchmark
                 return await Stj.JsonSerializer.DeserializeAsync<SearchResults>(stream, options: StjOptions).ConfigureAwait(false);
             }
         }
+
+        [Benchmark(Description = "System.Text.Json with JsonDocument")]
+        public SearchResults SystemTextJsonJsonDocument()
+        {
+            using (var stream = File.OpenRead(_inputFiles[InputFile]))
+            using (var cursor = JsonDocument.Parse(stream))
+            {
+                return SearchResultJsonDocumentReader.Parse(cursor.RootElement);
+            }
+        }
+
+        [Benchmark(Description = "System.Text.Json with JsonDocument with Cloning")]
+        public SearchResults SystemTextJsonJsonDocumentWithCloning()
+        {
+            JsonElement clonedElement;
+            using (var stream = File.OpenRead(_inputFiles[InputFile]))
+            using (var cursor = JsonDocument.Parse(stream))
+            {
+                clonedElement = cursor.RootElement.Clone();
+            }
+            return SearchResultJsonDocumentReader.Parse(clonedElement);
+        }
+
 
         [Benchmark(Description = "Newtonsoft.Json JsonSerializer")]
         public SearchResults NewtonsoftJson()
