@@ -1,29 +1,29 @@
-``` ini
+```
 
-BenchmarkDotNet=v0.12.1, OS=Windows 10.0.19042
-AMD Ryzen 7 2700X, 1 CPU, 16 logical and 8 physical cores
-.NET Core SDK=5.0.201
-  [Host]        : .NET Core 5.0.4 (CoreCLR 5.0.421.11614, CoreFX 5.0.421.11614), X64 RyuJIT
-  .NET Core 5.0 : .NET Core 5.0.4 (CoreCLR 5.0.421.11614, CoreFX 5.0.421.11614), X64 RyuJIT
-  .NET Core 3.1 : .NET Core 3.1.13 (CoreCLR 4.700.21.11102, CoreFX 4.700.21.11602), X64 RyuJIT
-  .NET 4.7.2    : .NET Framework 4.8 (4.8.4300.0), X64 RyuJIT
+BenchmarkDotNet v0.13.9+228a464e8be6c580ad9408e98f18813f6407fb5a, Windows 11 (10.0.22631.2428)
+AMD Ryzen 9 7950X, 1 CPU, 32 logical and 16 physical cores
+.NET SDK 8.0.100-rc.2.23502.2
+  [Host]     : .NET 8.0.0 (8.0.23.47906), X64 RyuJIT AVX2
+  Job-ABYMVR : .NET 8.0.0 (8.0.23.47906), X64 RyuJIT AVX2
+  Job-MDXSOH : .NET 6.0.24 (6.0.2423.51814), X64 RyuJIT AVX2
+  Job-LWZTAB : .NET Framework 4.8.1 (4.8.9181.0), X64 RyuJIT VectorSize=256
 
 
 ```
-|       Method |           Job |       Runtime |      Mean |    Error |   StdDev | Ratio | RatioSD |       Gen 0 |    Gen 1 |    Gen 2 | Allocated |
-|------------- |-------------- |-------------- |----------:|---------:|---------:|------:|--------:|------------:|---------:|---------:|----------:|
-| StateMachine | .NET Core 5.0 | .NET Core 5.0 |  64.85 ms | 1.144 ms | 1.014 ms |  0.89 |    0.02 |  18125.0000 | 125.0000 | 125.0000 |  74.91 MB |
-|         Span | .NET Core 3.1 | .NET Core 3.1 |  71.54 ms | 0.512 ms | 0.479 ms |  0.98 |    0.02 |  11714.2857 | 142.8571 | 142.8571 |  49.79 MB |
-|         Span | .NET Core 5.0 | .NET Core 5.0 |  72.85 ms | 1.192 ms | 1.115 ms |  1.00 |    0.00 |  11857.1429 | 142.8571 | 142.8571 |  49.79 MB |
-| StateMachine | .NET Core 3.1 | .NET Core 3.1 |  73.28 ms | 1.352 ms | 1.264 ms |  1.01 |    0.02 |  18142.8571 | 142.8571 | 142.8571 |  74.91 MB |
-|         Span |    .NET 4.7.2 |    .NET 4.7.2 |  78.66 ms | 1.526 ms | 2.421 ms |  1.07 |    0.03 |  63714.2857 | 142.8571 | 142.8571 |  50.84 MB |
-| StateMachine |    .NET 4.7.2 |    .NET 4.7.2 |  83.54 ms | 0.759 ms | 0.710 ms |  1.15 |    0.02 |  97714.2857 | 142.8571 | 142.8571 |  76.28 MB |
-| NuGetVersion | .NET Core 3.1 | .NET Core 3.1 | 101.09 ms | 0.442 ms | 0.413 ms |  1.39 |    0.02 |  20600.0000 |        - |        - |  85.76 MB |
-|    SubString | .NET Core 3.1 | .NET Core 3.1 | 104.40 ms | 0.478 ms | 0.447 ms |  1.43 |    0.02 |  24000.0000 |        - |        - |  99.08 MB |
-|    SubString | .NET Core 5.0 | .NET Core 5.0 | 105.13 ms | 0.756 ms | 0.670 ms |  1.44 |    0.02 |  24000.0000 |        - |        - |  99.08 MB |
-| NuGetVersion | .NET Core 5.0 | .NET Core 5.0 | 106.03 ms | 1.640 ms | 1.370 ms |  1.45 |    0.03 |  20600.0000 |        - |        - |  85.76 MB |
-|    SubString |    .NET 4.7.2 |    .NET 4.7.2 | 180.26 ms | 1.647 ms | 1.541 ms |  2.48 |    0.05 | 142333.3333 |        - |        - | 110.06 MB |
-| NuGetVersion |    .NET 4.7.2 |    .NET 4.7.2 | 207.31 ms | 0.498 ms | 0.441 ms |  2.85 |    0.05 | 246666.6667 |        - |        - |  188.1 MB |
-|        Regex | .NET Core 5.0 | .NET Core 5.0 | 442.83 ms | 2.040 ms | 1.908 ms |  6.08 |    0.09 | 140000.0000 |        - |        - | 563.92 MB |
-|        Regex | .NET Core 3.1 | .NET Core 3.1 | 585.40 ms | 3.430 ms | 3.041 ms |  8.04 |    0.14 | 140000.0000 |        - |        - | 563.92 MB |
-|        Regex |    .NET 4.7.2 |    .NET 4.7.2 | 630.90 ms | 3.039 ms | 2.843 ms |  8.66 |    0.13 | 786000.0000 |        - |        - | 593.19 MB |
+| Method       | Runtime              | Mean      | Error    | StdDev   | Ratio | RatioSD | Gen0        | Gen1     | Gen2     | Allocated  | Alloc Ratio |
+|------------- |--------------------- |----------:|---------:|---------:|------:|--------:|------------:|---------:|---------:|-----------:|------------:|
+| Span         | .NET 8.0             |  36.84 ms | 0.119 ms | 0.099 ms |  1.00 |    0.00 |   5428.5714 | 142.8571 | 142.8571 |   90.66 MB |        1.00 |
+| StateMachine | .NET 8.0             |  44.74 ms | 0.846 ms | 0.974 ms |  1.22 |    0.02 |   8500.0000 | 166.6667 | 166.6667 |  139.16 MB |        1.53 |
+| NuGetVersion | .NET 8.0             |  45.89 ms | 0.296 ms | 0.262 ms |  1.24 |    0.01 |   7636.3636 |  90.9091 |  90.9091 |  126.42 MB |        1.39 |
+| Span         | .NET 6.0             |  52.15 ms | 0.287 ms | 0.268 ms |  1.42 |    0.01 |   5400.0000 | 100.0000 | 100.0000 |   90.66 MB |        1.00 |
+| SubString    | .NET 8.0             |  52.96 ms | 0.720 ms | 0.673 ms |  1.44 |    0.02 |  10800.0000 | 100.0000 | 100.0000 |  176.93 MB |        1.95 |
+| StateMachine | .NET 6.0             |  61.15 ms | 0.467 ms | 0.437 ms |  1.66 |    0.01 |   8444.4444 | 111.1111 | 111.1111 |  139.16 MB |        1.53 |
+| Span         | .NET Framework 4.8.1 |  61.23 ms | 0.562 ms | 0.469 ms |  1.66 |    0.01 |  14625.0000 | 125.0000 | 125.0000 |   92.74 MB |        1.02 |
+| NuGetVersion | .NET 6.0             |  63.18 ms | 0.403 ms | 0.337 ms |  1.71 |    0.01 |   7625.0000 | 125.0000 | 125.0000 |  126.42 MB |        1.39 |
+| NuGetVersion | .NET Framework 4.8.1 |  69.76 ms | 1.058 ms | 0.989 ms |  1.89 |    0.03 |  25000.0000 | 125.0000 | 125.0000 |  154.76 MB |        1.71 |
+| StateMachine | .NET Framework 4.8.1 |  71.24 ms | 1.406 ms | 1.444 ms |  1.93 |    0.04 |  22857.1429 | 142.8571 | 142.8571 |   142.1 MB |        1.57 |
+| SubString    | .NET 6.0             |  88.01 ms | 1.270 ms | 1.188 ms |  2.39 |    0.03 |  10833.3333 | 166.6667 | 166.6667 |  176.93 MB |        1.95 |
+| SubString    | .NET Framework 4.8.1 | 162.32 ms | 1.721 ms | 1.610 ms |  4.40 |    0.04 |  31750.0000 |        - |        - |  195.86 MB |        2.16 |
+| Regex        | .NET 8.0             | 272.09 ms | 1.985 ms | 1.857 ms |  7.38 |    0.05 |  60000.0000 |        - |        - |  969.67 MB |       10.70 |
+| Regex        | .NET 6.0             | 312.89 ms | 2.815 ms | 2.496 ms |  8.50 |    0.07 |  60000.0000 |        - |        - |  969.67 MB |       10.70 |
+| Regex        | .NET Framework 4.8.1 | 477.18 ms | 3.022 ms | 2.679 ms | 12.95 |    0.09 | 169000.0000 |        - |        - | 1022.29 MB |       11.28 |

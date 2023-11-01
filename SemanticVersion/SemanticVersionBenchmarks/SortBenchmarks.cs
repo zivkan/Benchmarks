@@ -17,10 +17,6 @@ using NuGetCopy7 = SemanticVersionBenchmarks.Implementations.NuGetCopy7;
 
 namespace SemanticVersionBenchmarks
 {
-    [SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.Net80)]
-    [SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.Net60)]
-    [SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.Net481)]
-    [MarkdownExporterAttribute.GitHub]
     [MemoryDiagnoser]
     public class SortBenchmarks
     {

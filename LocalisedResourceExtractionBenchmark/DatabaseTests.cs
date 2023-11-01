@@ -9,14 +9,34 @@ using LocalisedResourceExtractionBenchmark.Setup;
 namespace LocalisedResourceExtractionBenchmark
 {
     [MemoryDiagnoser]
-    [SimpleJob(invocationCount: 10)] // automatic invocation count didn't run enough to trigger gen2 gc for some tests
     public class DatabaseTests
     {
-        private const string ConnectionString = "Data Source=(LocalDB)\\MSSQLLocalDB;Database=LocalisedResourceExtractionBenchmark;Integrated Security=true";
+        private const string LocalDbConnectionString = "Server=(localdb)\\MSSQLLocalDB;Integrated Security=true";
+        private const string DatabaseName = "LocalisedResourceExtractionBenchmark";
+        private const string BenchmarkConnectionString = LocalDbConnectionString + ";Database=" + DatabaseName;
 
-        public void CreateTablesAndData()
+        public static void CreateTablesAndData()
         {
-            using (var connection = new SqlConnection(ConnectionString))
+            using (var connection = new SqlConnection(LocalDbConnectionString))
+            {
+                connection.Open();
+                bool dbExists;
+                using (var command = new SqlCommand($"SELECT name FROM sys.databases WHERE name='{DatabaseName}'", connection))
+                {
+                    var result = command.ExecuteScalar();
+                    dbExists = result != null;
+                }
+
+                if (!dbExists)
+                {
+                    using (var command = new SqlCommand($"CREATE DATABASE {DatabaseName}", connection))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+
+            using (var connection = new SqlConnection(BenchmarkConnectionString))
             {
                 connection.Open();
 
@@ -27,11 +47,9 @@ namespace LocalisedResourceExtractionBenchmark
             }
         }
 
-        [Benchmark]
-        [ArgumentsSource(nameof(GetExtractors))]
-        public List<SourceModel> RunExtractions(Type extractor)
+        private List<SourceModel> RunExtractions(Type extractor)
         {
-            using (var connection = new SqlConnection(ConnectionString))
+            using (var connection = new SqlConnection(BenchmarkConnectionString))
             {
                 connection.Open();
 
@@ -42,15 +60,46 @@ namespace LocalisedResourceExtractionBenchmark
             }
         }
 
-        public static IEnumerable<Type> GetExtractors()
+        [Benchmark]
+        public List<SourceModel> BasicJoin()
         {
-            yield return typeof(BasicJoin);
-            yield return typeof(BasicJoinAsXml);
-            yield return typeof(LabelsAsXml);
-            yield return typeof(LabelsAsJoinedColumns);
-            yield return typeof(LabelsAsPivotedColumns);
-            yield return typeof(SingleLanguage);
-            yield return typeof(LocalJoin);
+            return RunExtractions(typeof(BasicJoin));
+        }
+
+        [Benchmark]
+        public List<SourceModel> BasicJoinAsXml()
+        {
+            return RunExtractions(typeof(BasicJoinAsXml));
+        }
+
+        [Benchmark]
+        public List<SourceModel> LabelsAsXml()
+        {
+            return RunExtractions(typeof(LabelsAsXml));
+        }
+
+        [Benchmark]
+        public List<SourceModel> LabelsAsJoinedColumns()
+        {
+            return RunExtractions(typeof(LabelsAsJoinedColumns));
+        }
+
+        [Benchmark]
+        public List<SourceModel> LabelsAsPivotedColumns()
+        {
+            return RunExtractions(typeof(LabelsAsPivotedColumns));
+        }
+
+        [Benchmark]
+        public List<SourceModel> SingleLanguage()
+        {
+            return RunExtractions(typeof(SingleLanguage));
+        }
+
+        [Benchmark]
+        public List<SourceModel> LocalJoin()
+        {
+            return RunExtractions(typeof(LocalJoin));
         }
     }
 }

@@ -8,9 +8,6 @@ using System.Threading.Tasks;
 
 namespace SemanticVersionBenchmarks
 {
-    [SimpleJob(RuntimeMoniker.Net80, baseline: true)]
-    [SimpleJob(RuntimeMoniker.Net60)]
-    [SimpleJob(RuntimeMoniker.Net481)]
     [MemoryDiagnoser]
     [Orderer(BenchmarkDotNet.Order.SummaryOrderPolicy.FastestToSlowest)]
     public class ParseBenchmarks

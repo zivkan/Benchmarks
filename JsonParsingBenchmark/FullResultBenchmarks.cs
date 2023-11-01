@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Jobs;
 using JsonParsingBenchmark.Converters.Stj;
 using JsonParsingBenchmark.Model;
@@ -17,6 +18,7 @@ namespace JsonParsingBenchmark
     [SimpleJob(RuntimeMoniker.Net80)]
     [SimpleJob(RuntimeMoniker.Net60)]
     [SimpleJob(RuntimeMoniker.Net481)]
+    [HideColumns(Column.Job, Column.Error, Column.RatioSD)]
     public class FullResultBenchmarks
     {
         private JsonSerializerOptions StjOptions;

@@ -18,13 +18,50 @@ namespace LocalisedResourceExtractionBenchmark.Setup
 
         public void CreateAndPopulateTables()
         {
-            CreateLanguageTable();
-            CreateDictionaryTable();
-            CreateSourceTable();
+            if (!LanguageTableExists())
+            {
+                CreateLanguageTable();
+                PopulateLanguageTable();
+            }
 
-            PopulateLanguageTable();
-            PopulateDictionaryTable();
-            PopulateSourceTable();
+            if (!DictionaryTableExists())
+            {
+                CreateDictionaryTable();
+                PopulateDictionaryTable();
+            }
+
+            if (!SourceTableExists())
+            {
+                CreateSourceTable();
+                PopulateSourceTable();
+            }
+        }
+
+        private bool LanguageTableExists()
+        {
+            using (var command = _connection.CreateCommand())
+            {
+                command.CommandText = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Languages'";
+                return (int)command.ExecuteScalar() == 1;
+            }
+        }
+
+        private bool DictionaryTableExists()
+        {
+            using (var command = _connection.CreateCommand())
+            {
+                command.CommandText = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Dictionary'";
+                return (int)command.ExecuteScalar() == 1;
+            }
+        }
+
+        private bool SourceTableExists()
+        {
+            using (var command = _connection.CreateCommand())
+            {
+                command.CommandText = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Source'";
+                return (int)command.ExecuteScalar() == 1;
+            }
         }
 
         private void CreateLanguageTable()

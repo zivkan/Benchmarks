@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28407.52
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34230.233
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LocalisedResourceExtractionBenchmark", "LocalisedResourceExtractionBenchmark\LocalisedResourceExtractionBenchmark.csproj", "{287630D8-052A-435E-9297-BD49B67C2279}"
 EndProject
@@ -22,12 +22,17 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticVersionBenchmarks", "SemanticVersion\SemanticVersionBenchmarks\SemanticVersionBenchmarks.csproj", "{3D828D34-F5D7-4BEE-B847-6CD263E6251C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SemanticVersion", "SemanticVersion", "{DBD383EA-9263-422D-8026-0ED6983D04CF}"
+	ProjectSection(SolutionItems) = preProject
+		SemanticVersion\ParseBenchmarks.md = SemanticVersion\ParseBenchmarks.md
+		SemanticVersion\Readme.md = SemanticVersion\Readme.md
+		SemanticVersion\SortBenchmarks.md = SemanticVersion\SortBenchmarks.md
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "zivkan.Benchmarks.Common", "zivkan.Benchmarks.Common\zivkan.Benchmarks.Common.csproj", "{7F2FB5B2-BBDC-49FC-BC51-37ADC50C665D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SemanticVersionTests", "SemanticVersion\SemanticVersionTests\SemanticVersionTests.csproj", "{E4635DF5-71F9-4289-9914-1B655B215E54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SemanticVersionTests", "SemanticVersion\SemanticVersionTests\SemanticVersionTests.csproj", "{E4635DF5-71F9-4289-9914-1B655B215E54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WritePerformance", "WritePerformance\WritePerformance.csproj", "{627B3078-E03F-4BC1-9492-39B1474A89BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WritePerformance", "WritePerformance\WritePerformance.csproj", "{627B3078-E03F-4BC1-9492-39B1474A89BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

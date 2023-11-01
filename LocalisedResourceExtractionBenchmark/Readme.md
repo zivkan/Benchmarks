@@ -1,6 +1,6 @@
 # Localised Resource Extraction Benchmark
 
-Here's a quick link to the [results](#results).
+See [the results in Results.md](Results.md).
 
 One of the systems I worked on was a statistical datawarehouse application. Each dataset has several dimensions, each dimension has several dimension members, and each dimension member can have labels in multiple languages.
 
@@ -34,15 +34,3 @@ This query also returns one row in the result set for each row in the source tab
 
 ### Local Join
 Send two queries to the database, one to get the whole source table, another the get the labels from the dictionary for the source rows that were retrieved. Convert all retrieved results into strongly typed classes for fast access and lookup, then do all necessary joins in C#. This tests if specialised data structures in a strongly typed language is faster than SQL, although the C# code is single-threaded.
-
-## <a id="results">Results</a>
-
-|Extraction Method|Time to complete|Memory Allocated|GC collections per 1k runs (gen0 gen1 gen2)|
-|-----------------|----------------|----------------|-------------------------------------------|
-|SingleLanguage|86 ms (55%)|11.8 MB|2200 1000 300|
-|LabelsAsJoinedColumns|157 ms (100%)|31.8 MB|6200 2900 900|
-|LocalJoin|193 ms (123%)|45.7 MB|8500 3500 1500|
-|BasicJoin|222 ms (142%)|41.6 MB|8100 3400 1200|
-|BasicJoinAsXml|227 ms (145%)|23.1 MB|4400 2000 600|
-|LabelsAsPivotedColumns|251 ms (160%)|31.8 MB|6300 2900 1000|
-|LabelsAsXml|345 ms (220%)|260.1 MB|44700 9800 1100|

@@ -11,9 +11,12 @@ namespace LocalisedResourceExtractionBenchmark
         static void Main(string[] args)
         {
             // Allow non optimised only to debug the report writer. Don't use for comparing results.
-            var results = BenchmarkRunner.Run<DatabaseTests>(new AllowNonOptimized());
+            DatabaseTests.CreateTablesAndData();
 
-            ReportWriter.UpdateReadme(results);
+            //var results = BenchmarkRunner.Run<DatabaseTests>(new AllowNonOptimized());
+            BenchmarkRunner.Run<DatabaseTests>();
+
+            //ReportWriter.UpdateReadme(results);
         }
 
         public class AllowNonOptimized : ManualConfig
